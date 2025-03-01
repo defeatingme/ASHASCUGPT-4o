@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>HAS Grading Interface</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2 { color: #333; }
+    form { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; }
+    label { display: block; margin-top: 10px; }
+    input, textarea, select { width: 100%; padding: 8px; margin-top: 4px; }
+    button { margin-top: 10px; padding: 8px 16px; }
+    pre { background: #f9f9f9; padding: 10px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <h1>HAS Grading Interface</h1>
+
+  <!-- Section: Session Setup -->
+  <section>
+    <h2>Setup Session</h2>
+    <form id="setupForm">
+        <label for="session_id">Session ID:</label>
+        <input type="text" id="session_id" name="session_id" required><br><br>
+        
+        <label for="solGrade">Solution Grade (%):</label>
+        <input type="number" id="solGrade" name="solGrade" step="0.01" required><br><br>
+
+        <label for="ansGrade">Final Answer Grade (%):</label>
+        <input type="number" id="ansGrade" name="ansGrade" step="0.01" required><br><br>
+
+        <label for="ansKey">Answer Key:</label><br>
+        <textarea id="ansKey" name="ansKey" rows="4" required></textarea><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+  </section>
+
+  <hr>
+
+  <!-- Section: HAS Submission / ASM Approval -->
+  <section>
+    <h2>HAS Submission / ASM Approval</h2>
+    <form id="hasForm">
+      <label for="message_type">Message Type:</label>
+      <select id="message_type" name="message_type">
+        <option value="has">HAS Submission</option>
+        <option value="asm">ASM Approval</option>
+      </select>
+
+      <label for="has_text">Input Text:</label>
+      <textarea id="has_text" name="has_text" rows="5" required></textarea>
+
+      <!-- Hidden field for session ID (populated after session setup) -->
+      <input type="hidden" id="session_id_input" name="session_id">
+
+      <button type="submit">Submit</button>
+    </form>
+  </section>
+
+  <!-- Section: Display Response -->
+  <section>
+    <h3>Server Response:</h3>
+    <pre id="responseText"></pre>
+  </section>
+
+  <script>
+    // Store the current session ID after setup.
+    let currentSessionId = "";
+
+    // Handle the session setup form submission.
+    document.getElementById("setupForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const session_id = document.getElementById("session_id").value;
+      const solGrade = parseFloat(document.getElementById("solGrade").value);
+      const ansGrade = parseFloat(document.getElementById("ansGrade").value);
+      const ansKey = document.getElementById("ansKey").value;
+      
+
+      const response = await fetch("http://127.0.0.1:8000/setup", {  // Ensure this URL matches your FastAPI server
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ session_id, solGrade, ansGrade, ansKey })
+            });
+
+            const result = await response.json();
+            alert(result.message || "Session setup completed!");
+        });
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("responseText").textContent = JSON.stringify(data, null, 2);
+        currentSessionId = session_id;
+        // Set the hidden field in the HAS form.
+        document.getElementById("session_id_input").value = session_id;
+      })
+      .catch(error => {
+        document.getElementById("responseText").textContent = "Error: " + error;
+      });
+
+    // Handle the HAS submission / ASM approval form.
+    document.getElementById("hasForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      if (!currentSessionId) {
+        alert("Please setup a session first.");
+        return;
+      }
+
+      const message_type = document.getElementById("message_type").value;
+      const has_text = document.getElementById("has_text").value;
+      const session_id = currentSessionId;  // Use the stored session ID.
+
+      fetch("/submit_input", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: session_id,
+          message_type: message_type,
+          text: has_text
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("responseText").textContent = JSON.stringify(data, null, 2);
+      })
+      .catch(error => {
+        document.getElementById("responseText").textContent = "Error: " + error;
+      });
+    });
+  </script>
+</body>
+</html>

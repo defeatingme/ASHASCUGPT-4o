@@ -1,0 +1,1 @@
+\[x^2 - 5x + 6 = 0\]\[x = \frac{-(-5) \pm \sqrt{(-5)^2 - 4(1)(6)}}{2(1)}\]\[x = \frac{5 \pm \sqrt{25 - 24}}{2}\]\[x = \frac{5 \pm 1}{2}\]\[x = \frac{6}{2} \quad \text{or} \quad x = \frac{4}{2}\]\[x = 3 \quad \text{or} \quad x = 2\]
