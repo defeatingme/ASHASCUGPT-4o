@@ -5,18 +5,18 @@ import numpy as np
 from enum import Enum
 from collections import defaultdict
 import json
-
+#from Grading import Grading
 client = OpenAI()
 
 class Grading(BaseModel):
     session_id: str
     sol_weight: float
     fa_weight: float
-    answer_key: str
-
-
+    ak_latex: str
+    
 class Evaluation(BaseModel):
     display_result_or_ask_if_asm: str
+    employed_asm: bool
     sol_grade_integer: Optional[float]
     fa_grade_integer: Optional[float]
     overall_grade_integer: Optional[float]
@@ -51,7 +51,7 @@ def input_HAS():
     has = input("Input Handwritten Algebraic Solution:\n")
     prompt = (
         f"SOL = {g.sol_weight}%, FA = {g.fa_weight}%\n\n"
-        f"AK 1: '{g.answer_key}'\n"
+        f"AK 1: '{g.ak_latex}'\n"
         f"HAS {has_count}: '{has}'"
     )
     add_message("user", prompt)
@@ -67,7 +67,7 @@ has_count = 1
 g.fa_weight = int(input("Input Final Answer Weight %: "))
 g.sol_weight = 100 - g.fa_weight
 print(f"Solution = {g.sol_weight}% | Final Answer = {g.fa_weight}%")
-g.answer_key = input("Input Answer Key:\n")
+g.ak_latex = input("Input Answer Key:\n")
 
 print(input_HAS())
 
