@@ -1,7 +1,7 @@
 import sys
 import uuid
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QListWidget
-from PyQt6.QtCore import Qt
+from PySide6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QListWidget
+from PySide6.QtCore import Qt
 from database import engine
 from grading import SessionWindow  # Import SessionWindow
 
@@ -14,7 +14,7 @@ class HomeWindow(QWidget):
         # Window settings
         self.setWindowTitle("ALGEVAL - Home")
         self.setGeometry(100, 100, 1080, 720)
-        #self.setStyleSheet("background-color: #6e656a;")  # Keep main color
+        self.setStyleSheet("background-color: #6e656a;")  # Keep main color
 
         # UI Elements
         self.label_title = QLabel(f"Welcome, {self.instructor_name}!", self)
@@ -27,6 +27,7 @@ class HomeWindow(QWidget):
 
         # List of existing sessions
         self.session_list = QListWidget(self)
+        self.session_list.setStyleSheet("background-color: #bbb")
         self.load_sessions()
 
         # Create New Session Button

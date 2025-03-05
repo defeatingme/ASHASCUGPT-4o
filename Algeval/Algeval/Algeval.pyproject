@@ -1,0 +1,11 @@
+{
+    "files": [
+        "login.py",
+        "form.ui",
+        "home.py",
+        "home_ui.ui",
+        "ak-camera_ui.ui",
+        "ak_camera_ui.ui",
+        "ak_cam_ui.ui"
+    ]
+}
