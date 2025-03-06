@@ -38,10 +38,9 @@
     <cursorShape>ArrowCursor</cursorShape>
    </property>
    <property name="styleSheet">
-    <string notr="true">;
-background-color: rgb(208, 172, 220);
-color:  rgb(45, 34, 45)
-</string>
+    <string notr="true">background-color: rgb(71, 71, 71);
+color:  rgb(208, 172, 220);
+border: 1px solid rgb(208, 172, 220)</string>
    </property>
    <property name="text">
     <string>Enter</string>
@@ -150,6 +149,11 @@ using GPT-4o.</string>
      <height>36</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">padding: 8px; 
 border-radius: 5px; 
@@ -200,6 +204,11 @@ background-color: None
      <height>36</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">padding: 8px; 
 border-radius: 5px; 
@@ -249,6 +258,11 @@ background-color: None
      <width>681</width>
      <height>36</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">padding: 8px; 

@@ -19,9 +19,10 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtMultimediaWidgets import QVideoWidget
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QLabel,
-    QMainWindow, QMenu, QMenuBar, QPushButton,
-    QScrollArea, QScrollBar, QSizePolicy, QSlider,
-    QStackedWidget, QStatusBar, QTabWidget, QWidget)
+    QLineEdit, QMainWindow, QMenu, QMenuBar,
+    QPushButton, QScrollArea, QScrollBar, QSizePolicy,
+    QSlider, QStackedWidget, QStatusBar, QTabWidget,
+    QWidget)
 
 class Ui_Camera(object):
     def setupUi(self, Camera):
@@ -43,7 +44,7 @@ class Ui_Camera(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.captureWidget = QTabWidget(self.centralwidget)
         self.captureWidget.setObjectName(u"captureWidget")
-        self.captureWidget.setGeometry(QRect(250, 559, 491, 111))
+        self.captureWidget.setGeometry(QRect(370, 569, 371, 101))
         self.captureWidget.setStyleSheet(u"border: 1px solid rgb(208, 172, 220);\n"
 "background-color: rgb(71, 71, 71)")
         self.tab_2 = QWidget()
@@ -51,7 +52,7 @@ class Ui_Camera(object):
         self.takeImageButton = QPushButton(self.tab_2)
         self.takeImageButton.setObjectName(u"takeImageButton")
         self.takeImageButton.setEnabled(False)
-        self.takeImageButton.setGeometry(QRect(310, 10, 141, 24))
+        self.takeImageButton.setGeometry(QRect(200, 10, 141, 24))
         font = QFont()
         font.setFamilies([u"Arial"])
         font.setPointSize(10)
@@ -62,7 +63,7 @@ class Ui_Camera(object):
 "")
         self.exposureCompensation = QSlider(self.tab_2)
         self.exposureCompensation.setObjectName(u"exposureCompensation")
-        self.exposureCompensation.setGeometry(QRect(90, 30, 150, 30))
+        self.exposureCompensation.setGeometry(QRect(30, 30, 150, 30))
         self.exposureCompensation.setStyleSheet(u"background-color: None;\n"
 "border: None;")
         self.exposureCompensation.setMinimum(-4)
@@ -72,13 +73,13 @@ class Ui_Camera(object):
         self.exposureCompensation.setTickPosition(QSlider.TickPosition.TicksAbove)
         self.label = QLabel(self.tab_2)
         self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(80, 10, 161, 16))
+        self.label.setGeometry(QRect(20, 10, 161, 16))
         self.label.setFont(font)
         self.label.setStyleSheet(u"background-color: None;\n"
 "border: None;")
         self.push_retake = QPushButton(self.tab_2)
         self.push_retake.setObjectName(u"push_retake")
-        self.push_retake.setGeometry(QRect(310, 40, 141, 21))
+        self.push_retake.setGeometry(QRect(200, 40, 141, 21))
         self.push_retake.setFont(font)
         self.push_retake.setStyleSheet(u"background-color: #333;\n"
 "color: rgb(208, 172, 220)\n"
@@ -87,7 +88,7 @@ class Ui_Camera(object):
         self.captureWidget.addTab(self.tab_2, "")
         self.stackedWidget = QStackedWidget(self.centralwidget)
         self.stackedWidget.setObjectName(u"stackedWidget")
-        self.stackedWidget.setGeometry(QRect(20, 20, 720, 540))
+        self.stackedWidget.setGeometry(QRect(0, 20, 740, 560))
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(0)
@@ -194,7 +195,7 @@ class Ui_Camera(object):
         self.push_save.setCheckable(False)
         self.push_back = QPushButton(self.centralwidget)
         self.push_back.setObjectName(u"push_back")
-        self.push_back.setGeometry(QRect(20, 640, 121, 21))
+        self.push_back.setGeometry(QRect(20, 650, 121, 21))
         font1 = QFont()
         font1.setFamilies([u"Arial"])
         font1.setPointSize(10)
@@ -216,7 +217,7 @@ class Ui_Camera(object):
         font2 = QFont()
         font2.setFamilies([u"Arial"])
         font2.setPointSize(10)
-        font2.setBold(True)
+        font2.setBold(False)
         font2.setUnderline(False)
         self.label_has.setFont(font2)
         self.label_has.setStyleSheet(u"background-color: None;\n"
@@ -224,14 +225,14 @@ class Ui_Camera(object):
         self.label_has.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.frame_result = QFrame(self.centralwidget)
         self.frame_result.setObjectName(u"frame_result")
-        self.frame_result.setGeometry(QRect(760, 329, 301, 301))
+        self.frame_result.setGeometry(QRect(750, 329, 321, 301))
         self.frame_result.setStyleSheet(u"border: 1px solid  rgb(208, 172, 220);\n"
 "background-color: rgb(150, 150, 150)")
         self.frame_result.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_result.setFrameShadow(QFrame.Shadow.Raised)
         self.label_result = QLabel(self.frame_result)
         self.label_result.setObjectName(u"label_result")
-        self.label_result.setGeometry(QRect(0, 0, 301, 21))
+        self.label_result.setGeometry(QRect(0, 0, 321, 21))
         self.label_result.setFont(font)
         self.label_result.setStyleSheet(u"color: #eee;\n"
 "background-color: rgb(71, 71, 71);")
@@ -255,7 +256,7 @@ class Ui_Camera(object):
         self.label_fa_grade.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
         self.label_overall_grade = QLabel(self.frame_result)
         self.label_overall_grade.setObjectName(u"label_overall_grade")
-        self.label_overall_grade.setGeometry(QRect(200, 260, 100, 41))
+        self.label_overall_grade.setGeometry(QRect(200, 260, 121, 41))
         self.label_overall_grade.setFont(font3)
         self.label_overall_grade.setStyleSheet(u"color: #eee;\n"
 "background-color: rgb(71, 71, 71);")
@@ -267,16 +268,16 @@ class Ui_Camera(object):
         self.scrollAreaWidget_result = QWidget()
         self.scrollAreaWidget_result.setObjectName(u"scrollAreaWidget_result")
         self.scrollAreaWidget_result.setGeometry(QRect(0, 0, 299, 239))
-        self.scroll_result = QScrollBar(self.scrollAreaWidget_result)
+        self.web_result = QWebEngineView(self.scrollAreaWidget_result)
+        self.web_result.setObjectName(u"web_result")
+        self.web_result.setGeometry(QRect(0, 0, 301, 241))
+        self.scrollAreaWidget_result_2.setWidget(self.scrollAreaWidget_result)
+        self.scroll_result = QScrollBar(self.frame_result)
         self.scroll_result.setObjectName(u"scroll_result")
-        self.scroll_result.setGeometry(QRect(280, 0, 21, 241))
+        self.scroll_result.setGeometry(QRect(300, 20, 21, 241))
         self.scroll_result.setStyleSheet(u"border: 1px solid rgb(208, 172, 220);\n"
 "background-color: rgb(71, 71, 71)")
         self.scroll_result.setOrientation(Qt.Orientation.Vertical)
-        self.web_result = QWebEngineView(self.scrollAreaWidget_result)
-        self.web_result.setObjectName(u"web_result")
-        self.web_result.setGeometry(QRect(0, 0, 281, 241))
-        self.scrollAreaWidget_result_2.setWidget(self.scrollAreaWidget_result)
         self.label_counter = QLabel(self.centralwidget)
         self.label_counter.setObjectName(u"label_counter")
         self.label_counter.setGeometry(QRect(30, 0, 241, 16))
@@ -294,6 +295,40 @@ class Ui_Camera(object):
         self.label_last_has.setStyleSheet(u"color: #eee;\n"
 "background-color: None")
         self.label_last_has.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
+        self.edit_student_name = QLineEdit(self.centralwidget)
+        self.edit_student_name.setObjectName(u"edit_student_name")
+        self.edit_student_name.setGeometry(QRect(80, 590, 281, 35))
+        font5 = QFont()
+        font5.setPointSize(10)
+        self.edit_student_name.setFont(font5)
+        self.edit_student_name.setStyleSheet(u"padding: 8px; \n"
+"border-radius: 5px; \n"
+"border: 1px solid rgb(81, 139, 132);\n"
+"background-color: white")
+        self.label_student_name = QLabel(self.centralwidget)
+        self.label_student_name.setObjectName(u"label_student_name")
+        self.label_student_name.setGeometry(QRect(20, 600, 61, 21))
+        font6 = QFont()
+        font6.setFamilies([u"Arial"])
+        font6.setPointSize(10)
+        font6.setBold(True)
+        font6.setUnderline(False)
+        self.label_student_name.setFont(font6)
+        self.label_student_name.setStyleSheet(u"background-color: None;\n"
+"color: #eee")
+        self.label_student_name.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+        self.label_note_autofill = QLabel(self.centralwidget)
+        self.label_note_autofill.setObjectName(u"label_note_autofill")
+        self.label_note_autofill.setGeometry(QRect(130, 620, 151, 20))
+        font7 = QFont()
+        font7.setFamilies([u"Arial"])
+        font7.setPointSize(8)
+        font7.setBold(False)
+        font7.setUnderline(False)
+        self.label_note_autofill.setFont(font7)
+        self.label_note_autofill.setStyleSheet(u"background-color: None;\n"
+"color: rgb(208, 172, 220)")
+        self.label_note_autofill.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         Camera.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(Camera)
         self.menubar.setObjectName(u"menubar")
@@ -366,6 +401,10 @@ class Ui_Camera(object):
 "{overall_grade}", None))
         self.label_counter.setText(QCoreApplication.translate("Camera", u"No. of solution checked: {has_counter}", None))
         self.label_last_has.setText(QCoreApplication.translate("Camera", u"Last checked from: {has_name}", None))
+        self.edit_student_name.setText("")
+        self.edit_student_name.setPlaceholderText(QCoreApplication.translate("Camera", u"Optional/Auto-fill", None))
+        self.label_student_name.setText(QCoreApplication.translate("Camera", u"Name/ID:", None))
+        self.label_note_autofill.setText(QCoreApplication.translate("Camera", u"*May auto-fill after scan if none", None))
         self.menuFile.setTitle(QCoreApplication.translate("Camera", u"File", None))
         self.menuDevices.setTitle(QCoreApplication.translate("Camera", u"Devices", None))
         self.menuHelp.setTitle(QCoreApplication.translate("Camera", u"Help", None))

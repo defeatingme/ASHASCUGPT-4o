@@ -92,6 +92,7 @@ def setup_StudentHAS():
                 CREATE TABLE IF NOT EXISTS StudentHAS (
                     id SERIAL PRIMARY KEY,
                     answer_key_id INT NOT NULL,
+                    has_name TEXT,
                     has_latex TEXT NOT NULL,
                     result TEXT NOT NULL,
                     sol_grade FLOAT NOT NULL,

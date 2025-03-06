@@ -20,10 +20,10 @@
    <widget class="QTabWidget" name="captureWidget">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>559</y>
-      <width>491</width>
-      <height>111</height>
+      <x>370</x>
+      <y>569</y>
+      <width>371</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -43,7 +43,7 @@ background-color: rgb(71, 71, 71)</string>
       </property>
       <property name="geometry">
        <rect>
-        <x>310</x>
+        <x>200</x>
         <y>10</y>
         <width>141</width>
         <height>24</height>
@@ -68,7 +68,7 @@ color: rgb(208, 172, 220)
      <widget class="QSlider" name="exposureCompensation">
       <property name="geometry">
        <rect>
-        <x>90</x>
+        <x>30</x>
         <y>30</y>
         <width>150</width>
         <height>30</height>
@@ -97,7 +97,7 @@ border: None;</string>
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>80</x>
+        <x>20</x>
         <y>10</y>
         <width>161</width>
         <height>16</height>
@@ -121,7 +121,7 @@ border: None;</string>
      <widget class="QPushButton" name="push_retake">
       <property name="geometry">
        <rect>
-        <x>310</x>
+        <x>200</x>
         <y>40</y>
         <width>141</width>
         <height>21</height>
@@ -151,10 +151,10 @@ color: rgb(208, 172, 220)
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>0</x>
       <y>20</y>
-      <width>720</width>
-      <height>540</height>
+      <width>740</width>
+      <height>560</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -416,7 +416,7 @@ border: 1px solid rgb(208, 172, 220)</string>
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>640</y>
+      <y>650</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -479,7 +479,7 @@ color: #333</string>
      <font>
       <family>Arial</family>
       <pointsize>10</pointsize>
-      <bold>true</bold>
+      <bold>false</bold>
       <underline>false</underline>
      </font>
     </property>
@@ -497,9 +497,9 @@ color: #eee</string>
    <widget class="QFrame" name="frame_result">
     <property name="geometry">
      <rect>
-      <x>760</x>
+      <x>750</x>
       <y>329</y>
-      <width>301</width>
+      <width>321</width>
       <height>301</height>
      </rect>
     </property>
@@ -518,7 +518,7 @@ background-color: rgb(150, 150, 150)</string>
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>301</width>
+       <width>321</width>
        <height>21</height>
       </rect>
      </property>
@@ -598,7 +598,7 @@ background-color: rgb(71, 71, 71);</string>
       <rect>
        <x>200</x>
        <y>260</y>
-       <width>100</width>
+       <width>121</width>
        <height>41</height>
       </rect>
      </property>
@@ -642,34 +642,34 @@ background-color: rgb(71, 71, 71);</string>
         <height>239</height>
        </rect>
       </property>
-      <widget class="QScrollBar" name="scroll_result">
-       <property name="geometry">
-        <rect>
-         <x>280</x>
-         <y>0</y>
-         <width>21</width>
-         <height>241</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border: 1px solid rgb(208, 172, 220);
-background-color: rgb(71, 71, 71)</string>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Orientation::Vertical</enum>
-       </property>
-      </widget>
       <widget class="QWebEngineView" name="web_result" native="true">
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>281</width>
+         <width>301</width>
          <height>241</height>
         </rect>
        </property>
       </widget>
      </widget>
+    </widget>
+    <widget class="QScrollBar" name="scroll_result">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>20</y>
+       <width>21</width>
+       <height>241</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border: 1px solid rgb(208, 172, 220);
+background-color: rgb(71, 71, 71)</string>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
     </widget>
    </widget>
    <widget class="QLabel" name="label_counter">
@@ -721,6 +721,89 @@ background-color: None</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="edit_student_name">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>590</y>
+      <width>281</width>
+      <height>35</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">padding: 8px; 
+border-radius: 5px; 
+border: 1px solid rgb(81, 139, 132);
+background-color: white</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="placeholderText">
+     <string>Optional/Auto-fill</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_student_name">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>600</y>
+      <width>61</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>10</pointsize>
+      <bold>true</bold>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: None;
+color: #eee</string>
+    </property>
+    <property name="text">
+     <string>Name/ID:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_note_autofill">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>620</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>8</pointsize>
+      <bold>false</bold>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: None;
+color: rgb(208, 172, 220)</string>
+    </property>
+    <property name="text">
+     <string>*May auto-fill after scan if none</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
     </property>
    </widget>
   </widget>

@@ -14,11 +14,39 @@ from PySide6.QtGui import QAction, QActionGroup, QIcon, QImage, QPixmap
 from PySide6.QtCore import (QDateTime, QDir, QTimer, Qt, Slot, qWarning, 
                             Signal, QObject, QThread)
 from imagesettings import ImageSettings
-from camera_ui_test import Ui_Camera
+from has_camera_ui import Ui_Camera
+from database import engine
+
+
+# Worker for LaTeX rendering
+class LatexWorker(QObject):
+    """Worker object to perform LaTeX rendering on a background thread."""
+    # Define signals to communicate with the main thread
+    resultReady = Signal(str)        # will emit the LaTeX string or image path
+    finished   = Signal()           # emits when work is done (to clean up thread)
+    
+    def __init__(self, image_path:str):
+        super().__init__()
+        self.image_path = image_path  # path to the captured image to process
+
+    @Slot()  # This slot will run in the worker thread
+    def run(self):
+        # Heavy operation: process the image to extract or render LaTeX
+        # (For example, OCR or compute LaTeX. Here we simulate with placeholder text.)
+        try:
+            # ... (Image processing and LaTeX generation logic goes here) ...
+            latex_result = f"\\(Processed: {self.image_path}\\)"  # placeholder LaTeX string
+            # Optionally, one could generate a pixmap from LaTeX using an external tool here.
+        except Exception as e:
+            latex_result = f"Error: {e}"
+        # Emit the result to the main thread
+        self.resultReady.emit(latex_result)
+        # Emit finished signal to indicate the thread can stop
+        self.finished.emit()
 
 
 class HAS_Camera(QMainWindow):
-    def __init__(self):
+    def __init__(self, id):
         super().__init__()
 
         self._video_devices_group = None
@@ -38,7 +66,6 @@ class HAS_Camera(QMainWindow):
         self.image_counter = 1  # Start image counter
         self.image_folder = os.path.join(os.getcwd(), "images", "answerkey")
         os.makedirs(self.image_folder, exist_ok=True)  # Ensure the folder exists
-        #self._ui.takeImageButton.setIcon(QIcon(os.fspath(self.image_folder)))
         self._ui.actionAbout_Qt.triggered.connect(qApp.aboutQt)  # noqa: F821
 
         # disable all buttons by default
@@ -162,7 +189,6 @@ class HAS_Camera(QMainWindow):
 
     ################################################################################
     # Capture Functions
-
     def keyPressEvent(self, event):
             if event.isAutoRepeat():
                 return
@@ -176,7 +202,7 @@ class HAS_Camera(QMainWindow):
                 event.accept()
             else:
                 super().keyPressEvent(event)
-                
+
     @Slot(bool)
     def readyForCapture(self, ready):
         self._ui.takeImageButton.setEnabled(ready)
@@ -236,7 +262,35 @@ class HAS_Camera(QMainWindow):
             self.close()
 
         # Start background threads for processing after image is saved
-        #self.startLatexThread(f)
+        self.startLatexThread(f)
+
+    def startLatexThread(self, image_path:str):
+        """Launch a thread to process LaTeX rendering for the given image."""
+        # Create worker and thread for LaTeX processing
+        self.latexWorker = LatexWorker(image_path)
+        self.latexThread = QThread(self)  # make thread a child of main window (for automatic cleanup)
+        self.latexWorker.moveToThread(self.latexThread)
+        # When thread starts, call worker.run
+        self.latexThread.started.connect(self.latexWorker.run)
+        # Connect worker signals back to main UI slots
+        self.latexWorker.resultReady.connect(self.onLatexResult)     # handle result in main thread
+        self.latexWorker.finished.connect(self.latexThread.quit)
+        self.latexWorker.finished.connect(self.latexWorker.deleteLater)
+        self.latexThread.finished.connect(self.latexThread.deleteLater)
+        # Start the thread (will emit started, triggering worker.run)
+        self.latexThread.start()
+
+    @Slot(str)
+    def onLatexResult(self, latex_str:str):
+        """Slot to receive LaTeX result from LatexWorker (executed in main thread)."""
+        # Update the QLabel (solution) in the UI with the LaTeX output
+        self._ui.label_latex.setText(latex_str)
+        # Optionally, if latex_str is raw LaTeX, we could format it or display an image.
+        # Ensure this update happens in main thread (which it does, because this is a Qt slot).
+
+        # After getting LaTeX, start the other threads for web rendering and DB operations
+        self.startWebThread(latex_str)
+        self.startDbThread(self.currentImagePath, latex_str)  # using stored current image path
 
     ################################################################################
     # Close window

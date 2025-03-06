@@ -5,6 +5,7 @@ import numpy as np
 from enum import Enum
 from collections import defaultdict
 import json
+from database import engine
 #from Grading import Grading
 client = OpenAI()
 
