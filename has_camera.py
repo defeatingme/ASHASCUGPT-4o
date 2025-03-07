@@ -17,8 +17,7 @@ from imagesettings import ImageSettings
 from has_camera_ui import Ui_Camera
 from database import engine
 from ocr import GeminiOCR
-from latex_render import MathJaxApp
-import time
+#from evaluation import Evaluation
 
 # Worker for LaTeX rendering
 class LatexWorker(QObject):
@@ -27,9 +26,9 @@ class LatexWorker(QObject):
     resultReady = Signal(str)        # will emit the LaTeX string or image path
     finished   = Signal()           # emits when work is done (to clean up thread)
     
-    def __init__(self, raw_latex:str):
+    def __init__(self, has_latex:str):
         super().__init__()
-        self.raw_latex = raw_latex  # path to the captured image to process
+        self.has_latex = has_latex  # path to the captured image to process
     
     @Slot()  # This slot will run in the worker thread
     def run(self):
@@ -40,29 +39,34 @@ class LatexWorker(QObject):
             <head><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
             <body style="background-color: #333; color: #eee;">
                 <h3>Rendered LaTeX:</h3>
-                $$ {self.raw_latex} $$
+                $$ {self.has_latex} $$
             </body>
         </html>"""
         self.resultReady.emit(html_content)
         self.finished.emit()
     
-        latex_result = f"\\(Processed: {self.raw_latex}\\)"  # placeholder LaTeX string
+        latex_result = f"\\(Processed: {self.has_latex}\\)"  # placeholder LaTeX string
         # Emit the result to the main thread
         self.resultReady.emit(latex_result)
         # Emit finished signal to indicate the thread can stop
         self.finished.emit()
 
 
-class WebWorker(QObject):
+class OutputWorker(QObject):
     resultReady = Signal(str)
     finished = Signal()
 
-    def __init__(self, raw_latex):
+    def __init__(self, answer_key_id, fa_weight, ak_latex, has_latex):
         super().__init__()
-        self.raw_latex = raw_latex
-
+        self.answer_key_id = answer_key_id
+        self.fa_weight = fa_weight
+        self.ak_latex = ak_latex
+        self.has_latex = has_latex
+        
     @Slot()
     def run(self):
+        #parsed = Evaluation(self.fa_weight, self.ak_latex, self.has_latex)
+
         html_content = f"""
         <html>
             <head><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
@@ -76,8 +80,13 @@ class WebWorker(QObject):
 
 
 class HAS_Camera(QMainWindow):
-    def __init__(self, id):
+    def __init__(self, id, fa_weight, ak_latex):
         super().__init__()
+
+        # Attribute from AnswerKey table 
+        self.answer_key_id = id
+        self.fa_weight = fa_weight
+        self.ak_latex = ak_latex
 
         self._video_devices_group = None
         self.m_devices = QMediaDevices()
@@ -294,20 +303,20 @@ class HAS_Camera(QMainWindow):
         # Start background threads for processing after image is saved
         self.OCRProcessing(f)
 
+
     def OCRProcessing(self, file):
-        raw_latex = GeminiOCR(file)
-        print(raw_latex)
-        self.startLatexThread(raw_latex)
-        self.startWebThread(raw_latex)
+        has_latex = GeminiOCR(file)
+        print(has_latex)
+        self.startLatexThread(has_latex)
+        self.startOutputThread(self.answer_key_id, self.fa_weight, self.ak_latex, has_latex)
 
     ################################################################################
     # Threads
 
-
-    def startLatexThread(self, raw_latex):
+    def startLatexThread(self, has_latex):
         """Launch a thread to process LaTeX rendering for the given image."""
         # Create worker and thread for LaTeX processing
-        self.latexWorker = LatexWorker(raw_latex)
+        self.latexWorker = LatexWorker(has_latex)
         self.latexThread = QThread(self)  # make thread a child of main window (for automatic cleanup)
         self.latexWorker.moveToThread(self.latexThread)
         # When thread starts, call worker.run
@@ -331,16 +340,16 @@ class HAS_Camera(QMainWindow):
         # After getting LaTeX, start the other threads for web rendering and DB operations
         #self.startDbThread(self.currentImagePath, latex_str)  # using stored current image path
 
-    def startWebThread(self, latex_str):
-        self.webWorker = WebWorker(latex_str)
-        self.webThread = QThread(self)
-        self.webWorker.moveToThread(self.webThread)
-        self.webThread.started.connect(self.webWorker.run)
-        self.webWorker.resultReady.connect(self.onWebResult)
-        self.webWorker.finished.connect(self.webThread.quit)
-        self.webWorker.finished.connect(self.webWorker.deleteLater)
-        self.webThread.finished.connect(self.webThread.deleteLater)
-        self.webThread.start()
+    def startOutputThread(self, latex_str):
+        self.outputWorker = OutputWorker(latex_str)
+        self.outputThread = QThread(self)
+        self.outputWorker.moveToThread(self.outputThread)
+        self.outputThread.started.connect(self.outputWorker.run)
+        self.outputWorker.resultReady.connect(self.onWebResult)
+        self.outputWorker.finished.connect(self.outputThread.quit)
+        self.outputWorker.finished.connect(self.outputWorker.deleteLater)
+        self.outputThread.finished.connect(self.outputThread.deleteLater)
+        self.outputThread.start()
 
     @Slot(str)
     def onWebResult(self, html_content):

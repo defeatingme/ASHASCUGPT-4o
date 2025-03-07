@@ -57,7 +57,8 @@ class SessionWindow(QWidget):
         if file_path:
             self.image_path = file_path
             self.display_image(file_path)
-            self.ak_latex = GeminiOCR(file_path)            
+            self.ak_latex = GeminiOCR(file_path)
+            print(self.ak_latex)           
             #self._ui.label_latex.setText(f"Rendered LaTeX Code:\n{self.ak_latex}")
 
 
@@ -67,22 +68,16 @@ class SessionWindow(QWidget):
         self._ui.label_image.setPixmap(pixmap.scaled(180, 180, Qt.AspectRatioMode.KeepAspectRatio))
 
 
-    def save_answer_key(self, ak_latex, fa_weight):
+    def save_answer_key(self):
         """Saves the answer key to the database."""
-        fa_weight = self._ui.edit_fa_weight.text().strip() or 20
-        try:
-            fa_weight = float(fa_weight)
-            if fa_weight < 1.0 or fa_weight > 100.0:
-                raise ValueError  # Force the error handling below
-        except ValueError:
-            QMessageBox.warning(self, "Input Error", "Invalid input! Enter a number between 1 and 100.")
-            return
-
-        if not hasattr(self, "ak_latex"):
+        self.fa_weight = self._ui.edit_fa_weight.text().strip() or 20
+        self.fa_weight = float(self.fa_weight)
+        
+        if "ak_latex" == ("" or "The image does not contain any mathematical expression."):
             QMessageBox.warning(self, "Error", "No LaTeX code detected. Please upload an answer key image first.")
             return
         
-        sol_weight = 100 - fa_weight
+        sol_weight = 100 - self.fa_weight
         conn = engine()
         if conn:
             try:
@@ -92,7 +87,7 @@ class SessionWindow(QWidget):
                     INSERT INTO AnswerKey (session_id, sol_weight, fa_weight, ak_latex)
                     VALUES (%s, %s, %s, %s)
                     RETURNING id;
-                """, (self.session_id, sol_weight, fa_weight, self.ak_latex))
+                """, (self.session_id, sol_weight, self.fa_weight, self.ak_latex))
 
                 self.answer_key_id = cursor.fetchone()["id"]
 
@@ -115,7 +110,7 @@ class SessionWindow(QWidget):
             return
 
         # Open HAS_Camera with the new answer key ID
-        self.has_camera = HAS_Camera(self.answer_key_id)
+        self.has_camera = HAS_Camera(self.answer_key_id, self.fa_weight, self.ak_latex)
         self.has_camera.show()
         self.hide()
 

@@ -24,6 +24,7 @@ def GeminiOCR(image):
         "Extract the full math equation and solution exactly as shown in the image, preserving all fractions in a slashed format. Do not omit any numbers or symbols."
         "Display them in a latex code starting and ending with delimiters '$$...$$'"
         "If included in the image, also extract the name of the writer of the solution, typically at the top left of the image"
+        "If there is not even a single mathematical expression from the image, only state 'The image does not contain any mathematical expression.' and nothing else"
         "The results should be in plain text format."
     )
 
