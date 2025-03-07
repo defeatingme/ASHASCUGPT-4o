@@ -14,8 +14,8 @@ from PySide6.QtGui import QAction, QActionGroup, QIcon, QImage, QPixmap
 from PySide6.QtCore import (QDateTime, QDir, QTimer, Qt, Slot, qWarning, 
                             Signal, QObject, QThread)
 from imagesettings import ImageSettings
-from camera_ui_test import Ui_Camera
-
+#from camera_ui_test import Ui_Camera
+from has_camera_ui import Ui_Camera
 
 class HAS_Camera(QMainWindow):
     def __init__(self):

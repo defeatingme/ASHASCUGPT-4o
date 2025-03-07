@@ -6,15 +6,10 @@ from enum import Enum
 from collections import defaultdict
 import json
 from database import engine
-#from Grading import Grading
+from ocr import GeminiOCR
+
 client = OpenAI()
 
-class Grading(BaseModel):
-    session_id: str
-    sol_weight: float
-    fa_weight: float
-    ak_latex: str
-    
 class Evaluation(BaseModel):
     display_result_or_ask_if_asm: str
     employed_asm: bool
@@ -30,6 +25,7 @@ conversation = [
         If the HAS employs an Alternative Solution Method (ASM) different from the AK, state: 'The solution has an Alternative Method used... Do you want to allow it? (Yes/No)' and wait for user confirmation before grading. If allowed: alter T in SOL formula to total steps in the HAS instead of the AK, and C to simply correct steps. Refrain from asking again for subsequent HAS with similar ASM, or if the user forbid ASMs.
         If the HAS has no SOL , state: 'There is no solution provided to justify the answer'.
         For the result, briefly state the Problem from the AK, and if a step is Correct or not. Display Grade as: 'Solution = (substituted formula) = #%,\nFinal Answer = #%,\nGrade = #%'.
+        Make sure to apply delimiters '$$...$$' before and after latex format texts.
         """)
     }
 ]
@@ -48,27 +44,23 @@ def get_response():
 def add_message(role: str, content: str):
     conversation.append({"role": role, "content": str(content)})
 
-def input_HAS():
-    has = input("Input Handwritten Algebraic Solution:\n")
+def input_HAS(sol_weight, fa_weight, ak_latex, has_count, has_count):
+    #has = input("Input Handwritten Algebraic Solution:\n")
+    
     prompt = (
-        f"SOL = {g.sol_weight}%, FA = {g.fa_weight}%\n\n"
-        f"AK 1: '{g.ak_latex}'\n"
-        f"HAS {has_count}: '{has}'"
+        f"SOL = {sol_weight}%, FA = {fa_weight}%\n\n"
+        f"AK 1: '{ak_latex}'\n"
+        f"HAS {has_count}: '{has_latex}'"
     )
+
     add_message("user", prompt)
     return prompt
 
-#Initializing variables
-g = Grading
-e = Evaluation
-has_count = 1
-
-
 #Grading Input
-g.fa_weight = int(input("Input Final Answer Weight %: "))
-g.sol_weight = 100 - g.fa_weight
-print(f"Solution = {g.sol_weight}% | Final Answer = {g.fa_weight}%")
-g.ak_latex = input("Input Answer Key:\n")
+fa_weight = int(input("Input Final Answer Weight %: "))
+sol_weight = 100 - fa_weight
+print(f"Solution = {sol_weight}% | Final Answer = {fa_weight}%")
+ak_latex = input("Input Answer Key:\n")
 
 print(input_HAS())
 

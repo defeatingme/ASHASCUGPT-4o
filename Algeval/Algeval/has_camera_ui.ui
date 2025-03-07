@@ -353,6 +353,9 @@ color: rgb(208, 172, 220)
       </disabled>
      </palette>
     </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid rgb(208, 172, 220)</string>
+    </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
@@ -440,33 +443,6 @@ border: 1px solid rgb(208, 172, 220)</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_latex">
-    <property name="geometry">
-     <rect>
-      <x>760</x>
-      <y>20</y>
-      <width>300</width>
-      <height>300</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #eee;
-color: #333</string>
-    </property>
-    <property name="text">
-     <string>Rendered LaTeX
-300x300px</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_has">
     <property name="geometry">
      <rect>
       <x>760</x>
@@ -621,54 +597,17 @@ background-color: rgb(71, 71, 71);</string>
       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
      </property>
     </widget>
-    <widget class="QScrollArea" name="scrollAreaWidget_result_2">
+    <widget class="QWebEngineView" name="web_result" native="true">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>20</y>
-       <width>301</width>
-       <height>241</height>
-      </rect>
-     </property>
-     <property name="widgetResizable">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="scrollAreaWidget_result">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>299</width>
-        <height>239</height>
-       </rect>
-      </property>
-      <widget class="QWebEngineView" name="web_result" native="true">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>301</width>
-         <height>241</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
-    </widget>
-    <widget class="QScrollBar" name="scroll_result">
-     <property name="geometry">
-      <rect>
-       <x>300</x>
-       <y>20</y>
-       <width>21</width>
+       <width>321</width>
        <height>241</height>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">border: 1px solid rgb(208, 172, 220);
-background-color: rgb(71, 71, 71)</string>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
+      <string notr="true">background-color: rgb(150, 150, 150)</string>
      </property>
     </widget>
    </widget>
@@ -696,7 +635,7 @@ background-color: None</string>
      <string>No. of solution checked: {has_counter}</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_last_has">
+   <widget class="QLabel" name="label_last_name">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -740,8 +679,9 @@ background-color: None</string>
     <property name="styleSheet">
      <string notr="true">padding: 8px; 
 border-radius: 5px; 
-border: 1px solid rgb(81, 139, 132);
-background-color: white</string>
+border: 1px solid rgb(208, 172, 220);
+background-color: #333;
+color: #eee</string>
     </property>
     <property name="text">
      <string/>
@@ -763,7 +703,7 @@ background-color: white</string>
      <font>
       <family>Arial</family>
       <pointsize>10</pointsize>
-      <bold>true</bold>
+      <bold>false</bold>
       <underline>false</underline>
      </font>
     </property>
@@ -804,6 +744,20 @@ color: rgb(208, 172, 220)</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QWebEngineView" name="web_latex" native="true">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>20</y>
+      <width>320</width>
+      <height>300</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(150, 150, 150);
+border: 1px solid rgb(208, 172, 220)</string>
     </property>
    </widget>
   </widget>

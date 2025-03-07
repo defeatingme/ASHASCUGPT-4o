@@ -36,7 +36,7 @@ class CameraThread(QThread):
         self.cap.release()
         self.quit()
 
-class CameraWindow(QWidget):
+class AK_Camera(QWidget):
     def __init__(self, session_window):
         super().__init__()
 
@@ -185,6 +185,6 @@ class CameraWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = CameraWindow(None)
+    window = AK_Camera(None)
     window.show()
     sys.exit(app.exec())
