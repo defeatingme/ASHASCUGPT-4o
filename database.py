@@ -95,6 +95,7 @@ def setup_StudentHAS():
                     has_name TEXT,
                     has_latex TEXT NOT NULL,
                     result TEXT NOT NULL,
+                    sol_fraction NOT NULL,
                     sol_grade FLOAT NOT NULL,
                     fa_grade FLOAT NOT NULL,
                     overall_grade FLOAT NOT NULL,

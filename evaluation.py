@@ -49,7 +49,7 @@ class Evaluation(object):  # Now inherits QObject for PySide6 compatibility
         sol_weight = 100 - fa_weight
         prompt = (
             f"SOL = {sol_weight}%, FA = {fa_weight}%\n\n"
-            f"AK: '{ak_latex}'\n"
+            f"AK: '{ak_latex}'\n\n\n"
             f"HAS: '{has_latex}'"
         )
 
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     has_latex = open("GPTDataset/testHAS.txt", "r").read()  # Regular HAS following AK
 
     ## Evaluate first HAS (complies with AK → resets conversation)
-    result1 = grader.evaluate(fa_weight, ak_latex, ak_latex)
+    result1 = grader.evaluate(fa_weight, ak_latex, has_latex)
 
     ## Evaluate second HAS (triggers ASM → conversation is kept)
     #result2 = grader.evaluate(sol_weight, fa_weight, ak_latex, has_latex_2)

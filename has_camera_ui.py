@@ -345,7 +345,9 @@ class Ui_Camera(object):
         self.actionSettings.triggered.connect(Camera.configureCaptureSettings)
         self.actionStartCamera.triggered.connect(Camera.startCamera)
         self.actionStopCamera.triggered.connect(Camera.stopCamera)
-
+        self.push_save.clicked.connect(Camera.saveToDatabase)
+        self.push_back.clicked.connect(Camera.backToSession)
+        
         self.captureWidget.setCurrentIndex(0)
         self.stackedWidget.setCurrentIndex(0)
 

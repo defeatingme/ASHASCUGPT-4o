@@ -43,6 +43,8 @@ class SessionWindow(QWidget):
         self._ui.push_start.clicked.connect(self.start_has_checking)
         self._ui.push_back.clicked.connect(self.go_back)
         
+        self._ui.push_save.setEnabled(False)
+        self._ui.push_start.setEnabled(False)
 
     def open_camera(self):
         """Opens the Camera Window."""
@@ -66,6 +68,8 @@ class SessionWindow(QWidget):
         """Displays the selected image in QLabel."""
         pixmap = QPixmap(file_path)
         self._ui.label_image.setPixmap(pixmap.scaled(180, 180, Qt.AspectRatioMode.KeepAspectRatio))
+        
+        self._ui.push_save.setEnabled(True)
 
 
     def save_answer_key(self):
@@ -100,7 +104,7 @@ class SessionWindow(QWidget):
             except Exception as e:
                 QMessageBox.critical(self, "Database Error", f"Failed to save answer key: {e}")
 
-        print("Answer key saved!")
+        self._ui.push_start.setEnabled(True)
 
 
     def start_has_checking(self):

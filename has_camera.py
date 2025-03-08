@@ -21,8 +21,8 @@ from has_camera_ui import Ui_Camera
 from ocr import GeminiOCR
 from evaluation import Evaluation, Response_for_HAS
 from render_latex import MathJaxHTML
+from database import engine
 
-#from database import engine
 
 # ThreadPool instance for managing background tasks
 threadpool = QThreadPool.globalInstance()
@@ -47,14 +47,13 @@ class LatexWorker(QRunnable):
 
 class OutputWorker(QRunnable):
     """Worker class to evaluate student answers in a background thread."""
-    def __init__(self, answer_key_id, fa_weight, ak_latex, has_latex, callback):
+    def __init__(self, fa_weight, ak_latex, has_latex, callback):
         super().__init__()
-        self.answer_key_id = answer_key_id
         self.fa_weight = fa_weight
         self.ak_latex = ak_latex
         self.has_latex = has_latex
         self.callback = callback  # Callback function for UI update
-        
+
     @Slot()
     def run(self):        
         try:
@@ -69,6 +68,50 @@ class OutputWorker(QRunnable):
         except Exception as e:
             print(f"Error in OutputWorker: {str(e)}")  # Debugging
             self.callback("<html><body>Error: Could not process HAS.</body></html>", "{}")
+
+
+class SaveStudentHASWorker(QRunnable):
+    """Worker class for saving StudentHAS results to PostgreSQL asynchronously."""
+
+    finished = Signal(bool)  # Signal to notify success or failure
+
+    def __init__(self, answer_key_id, has_latex, result_json):
+        super().__init__()
+        self.answer_key_id = answer_key_id
+        self.result_json = result_json  # Save data as a dictionary
+        self.has_latex = has_latex
+    def run(self):
+        """Handles the database save operation in a background thread."""
+        try:
+            # Convert result JSON to dictionary
+            result_dict = json.loads(self.result_json)
+
+            # Extract values safely
+            result = result_dict.get("display_result_or_ask_if_asm", "N/A")
+            employed_asm = result_dict.get("employed_asm", False)
+            sol_fraction = result_dict.get("sol_substituted_formula", "--")
+            sol_grade = result_dict.get("sol_grade_integer", 0)
+            fa_grade = result_dict.get("fa_grade_integer", 0)
+            overall_grade = result_dict.get("overall_grade_integer", 0)
+
+            # Get persistent database connection
+            conn = engine()
+            if conn:
+                cursor = conn.cursor()
+
+                # Insert data into StudentHAS table
+                cursor.execute("""
+                    INSERT INTO StudentHAS (answer_key_id, has_latex, result, sol_fraction, sol_grade, fa_grade, overall_grade, used_asm)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """, (self.answer_key_id, self.has_latex, result, sol_grade, fa_grade, overall_grade, employed_asm))
+
+                conn.commit()  # Commit the transaction
+                cursor.close()  # Close cursor
+                self.finished.emit(True)
+
+        except Exception as e:
+            print(f"❌ Error saving StudentHAS: {str(e)}")
+            self.finished.emit(False)
 
 
 class HAS_Camera(QMainWindow):
@@ -102,7 +145,7 @@ class HAS_Camera(QMainWindow):
         # disable all buttons by default
         self.updateCameraActive(False)
         self.readyForCapture(False)
-
+        self.saveToDatabase(False)
         # try to actually initialize camera & mic
         self.initialize()
 
@@ -232,6 +275,7 @@ class HAS_Camera(QMainWindow):
             else:
                 super().keyPressEvent(event)
 
+
     @Slot(bool)
     def readyForCapture(self, ready):
         self._ui.takeImageButton.setEnabled(ready)
@@ -239,8 +283,9 @@ class HAS_Camera(QMainWindow):
 
     @Slot()
     def takeImage(self):
+        self._ui.takeImageButton.setEnabled(False)
         self.m_isCapturingImage = True
-        
+
         # Ensure directory exists before saving
         if not os.path.exists(self.image_folder):
             os.makedirs(self.image_folder, exist_ok=True)
@@ -297,10 +342,10 @@ class HAS_Camera(QMainWindow):
     # OCR and AI Threads
 
     def OCRProcessing(self, file):         
-        has_latex = GeminiOCR(file)
-        print(has_latex)
-        self.startLatexThread(has_latex)
-        self.startOutputThread(self.answer_key_id, self.fa_weight, self.ak_latex, has_latex)
+        self.has_latex = GeminiOCR(file)
+        print(self.has_latex)
+        self.startLatexThread(self.has_latex)
+        self.startOutputThread(self.fa_weight, self.ak_latex, self.has_latex)
 
     def startLatexThread(self, has_latex):
         """Launch LaTeX processing thread efficiently."""
@@ -311,27 +356,54 @@ class HAS_Camera(QMainWindow):
     def onLatexResult(self, html_content):
         self._ui.web_latex.setHtml(html_content)
 
-    def startOutputThread(self, answer_key_id, fa_weight, ak_latex, has_latex):
-        worker = OutputWorker(answer_key_id, fa_weight, ak_latex, has_latex, self.onFrameResult)
+    def startOutputThread(self, fa_weight, ak_latex, has_latex):
+        worker = OutputWorker(fa_weight, ak_latex, has_latex, self.onFrameResult)
         threadpool.start(worker)  # Use thread pool
 
     @Slot(str, str)
     def onFrameResult(self, html_content, result_json: str):
         #Slot to receive LaTeX result from LatexWorker (executed in main thread).
-        result_dict = json.loads(result_json)  # Convert JSON string back to dictionary
-        result = Response_for_HAS(**result_dict)  # Convert dict back to Pydantic model
         self._ui.web_result.setHtml(html_content)
-        correct_steps = result.sol_substituted_formula or None
-        sol_grade = result.sol_grade_integer or 0
-        fa_grade = result.fa_grade_integer or 0
-        overall_grade = result.overall_grade_integer or 0
 
-        self._ui.label_sol_grade.setText(f"Solution:\n&nbsp;{correct_steps} = {sol_grade}%")
+        self.result_json = result_json
+        result_dict = json.loads(result_json)  # Convert JSON string back to dictionary
+        sol_fraction = result_dict.get("sol_substituted_formula", "--")
+        sol_grade = result_dict.get("sol_grade_integer", 0)
+        fa_grade = result_dict.get("fa_grade_integer", 0)
+        overall_grade = result_dict.get("overall_grade_integer", 0)
+
+        self._ui.label_sol_grade.setText(f"Solution:\n&nbsp;{sol_fraction} = {sol_grade}%")
         self._ui.label_fa_grade.setText(f"Final Answer:\n&nbsp;&nbsp;{fa_grade}% (/{self.fa_weight}%)")
         self._ui.label_overall_grade.setText(f"Overall:\n&nbsp;&nbsp;{overall_grade}%")
 
+        self._ui.takeImageButton.setEnabled(True)
+        self._ui.push_save.setEnabled(True)
+
+
     ################################################################################
-    # Close window
+    # Save and Close window
+
+    def saveToDatabase(self):
+        self._ui.push_save.setEnabled(False)
+        """Runs a worker thread to save StudentHAS data when 'Save' is clicked."""
+        worker = SaveStudentHASWorker(self.answer_key_id, self.result_json)
+        worker.finished.connect(self.onSaveCompleted)  # Handle completion feedback
+        threadpool.start(worker)
+
+    @Slot(bool)
+    def onSaveCompleted(self, success):
+        """Handles UI updates after the save operation."""
+        if success:
+            self._ui.statusbar.showMessage("Handwritten solution record saved!")
+        else:
+            self._ui.statusbar.showMessage("Error: Failed to save StudentHAS record.")
+        
+        self._ui.push_save.setEnabled(True)
+
+    
+    def backToSession(self):
+        print("This function is curently under maintenance")
+
 
     def closeEvent(self, event):
         if self.m_isCapturingImage:
