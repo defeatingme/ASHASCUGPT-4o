@@ -4,6 +4,41 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from ocr import GeminiOCR
 
+# Define HTML content with MathJax
+def MathJaxHTML(latex_raw):
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <script id="MathJax-script" async 
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <style>
+            body {{
+                background-color: #333; /* Dark background */
+                color: #eee; /* Light gray text */
+                font-size: 14px; /* Adjusted for better visibility in 320x300 px */
+                padding: 5px;
+                font-family: Arial, sans-serif;
+                overflow: auto; /* Enable scrolling if needed */
+            }}
+            .math-container {{
+                text-align: left;
+                white-space: pre-wrap; /* Preserve new lines */
+                font-size: 12px; /* Ensuring 7-8 layers fit */
+                line-height: 0.5; /* Reduce line spacing */
+
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="math-container">
+            {latex_raw}
+        </div>
+    </body>
+    </html>
+    """
+    return html_content
+
 class MathJaxApp(QMainWindow):
     def __init__(self, latex_raw):
         super().__init__()
@@ -16,38 +51,8 @@ class MathJaxApp(QMainWindow):
         # Apply regex to wrap LaTeX properly
         formatted_latex = self.format_latex(latex_raw)
 
-        # Define HTML content with MathJax
-        html_content = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <script id="MathJax-script" async 
-                src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-            <style>
-                body {{
-                    background-color: #333; /* Dark background */
-                    color: #eee; /* Light gray text */
-                    font-size: 14px; /* Adjusted for better visibility in 320x300 px */
-                    padding: 5px;
-                    font-family: Arial, sans-serif;
-                    overflow: auto; /* Enable scrolling if needed */
-                }}
-                .math-container {{
-                    text-align: left;
-                    white-space: pre-wrap; /* Preserve new lines */
-                    font-size: 12px; /* Ensuring 7-8 layers fit */
-                    line-height: 0.5; /* Reduce line spacing */
-
-                }}
-            </style>
-        </head>
-        <body>
-            <div class="math-container">
-                {latex_raw}
-            </div>
-        </body>
-        </html>
-        """
+        html_content = MathJaxHTML(latex_raw)
+        
         # Load HTML into the QWebEngineView
         self.browser.setHtml(html_content)
         self.setCentralWidget(self.browser)

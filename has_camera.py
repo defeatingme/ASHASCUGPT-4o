@@ -4,7 +4,10 @@ from __future__ import annotations
 """PySide6 port of the QtMultiMedia camera example from Qt v6.x"""
 import os
 import sys
+import re
 from pathlib import Path
+from datetime import datetime
+import json
 from PySide6.QtMultimedia import (QAudioInput, QCamera, QCameraDevice,
                                   QImageCapture, QMediaCaptureSession,
                                   QMediaDevices, QMediaMetaData,
@@ -12,19 +15,25 @@ from PySide6.QtMultimedia import (QAudioInput, QCamera, QCameraDevice,
 from PySide6.QtWidgets import QDialog, QMainWindow, QMessageBox, QApplication
 from PySide6.QtGui import QAction, QActionGroup, QIcon, QImage, QPixmap
 from PySide6.QtCore import (QDateTime, QDir, QTimer, Qt, Slot, qWarning, 
-                            Signal, QObject, QThread)
+                            Signal, QObject, QRunnable, QThreadPool)
 from imagesettings import ImageSettings
 from has_camera_ui import Ui_Camera
-from database import engine
 from ocr import GeminiOCR
-#from evaluation import Evaluation
+from evaluation import Evaluation, Response_for_HAS
+from render_latex import MathJaxHTML
+
+#from database import engine
+
+# ThreadPool instance for managing background tasks
+threadpool = QThreadPool.globalInstance()
 
 # Worker for LaTeX rendering
-class LatexWorker(QObject):
-    """Worker object to perform LaTeX rendering on a background thread."""
-    # Define signals to communicate with the main thread
-    resultReady = Signal(str)        # will emit the LaTeX string or image path
-    finished   = Signal()           # emits when work is done (to clean up thread)
+class LatexWorker(QRunnable):
+    """Worker class to process LaTeX rendering using QRunnable in a thread pool."""
+    def __init__(self, has_latex: str, callback):
+        super().__init__()
+        self.has_latex = has_latex
+        self.callback = callback  # Callback function to update UI
     
     def __init__(self, has_latex:str):
         super().__init__()
@@ -32,51 +41,34 @@ class LatexWorker(QObject):
     
     @Slot()  # This slot will run in the worker thread
     def run(self):
-        # Heavy operation: process the image to extract or render LaTeX
-        # (For example, OCR or compute LaTeX. Here we simulate with placeholder text.)
-        html_content = f"""
-        <html>
-            <head><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
-            <body style="background-color: #333; color: #eee;">
-                <h3>Rendered LaTeX:</h3>
-                $$ {self.has_latex} $$
-            </body>
-        </html>"""
-        self.resultReady.emit(html_content)
-        self.finished.emit()
-    
-        latex_result = f"\\(Processed: {self.has_latex}\\)"  # placeholder LaTeX string
-        # Emit the result to the main thread
-        self.resultReady.emit(latex_result)
-        # Emit finished signal to indicate the thread can stop
-        self.finished.emit()
+        html_content = MathJaxHTML(self.has_latex)
+        self.callback(html_content)  # Send result back to UI safely
 
 
-class OutputWorker(QObject):
-    resultReady = Signal(str)
-    finished = Signal()
-
-    def __init__(self, answer_key_id, fa_weight, ak_latex, has_latex):
+class OutputWorker(QRunnable):
+    """Worker class to evaluate student answers in a background thread."""
+    def __init__(self, answer_key_id, fa_weight, ak_latex, has_latex, callback):
         super().__init__()
         self.answer_key_id = answer_key_id
         self.fa_weight = fa_weight
         self.ak_latex = ak_latex
         self.has_latex = has_latex
+        self.callback = callback  # Callback function for UI update
         
     @Slot()
-    def run(self):
-        #parsed = Evaluation(self.fa_weight, self.ak_latex, self.has_latex)
+    def run(self):        
+        try:
+            # Call fine-tuned GPT-4o model
+            result = Evaluation.evaluate(self.fa_weight, self.ak_latex, self.has_latex)
 
-        html_content = f"""
-        <html>
-            <head><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
-            <body style="background-color: #333; color: #eee;">
-                <h3>Rendered LaTeX:</h3>
-                $$ {self.latex_str} $$
-            </body>
-        </html>"""
-        self.resultReady.emit(html_content)
-        self.finished.emit()
+            html_content = MathJaxHTML(str(result.display_result_or_ask_if_asm))
+            result_json = result.json()
+
+            self.callback(html_content, result_json)
+
+        except Exception as e:
+            print(f"Error in OutputWorker: {str(e)}")  # Debugging
+            self.callback("<html><body>Error: Could not process HAS.</body></html>", "{}")
 
 
 class HAS_Camera(QMainWindow):
@@ -102,9 +94,9 @@ class HAS_Camera(QMainWindow):
         self._ui = Ui_Camera()
         self._ui.setupUi(self)
 
-        self.image_counter = 1  # Start image counter
-        self.image_folder = os.path.join(os.getcwd(), "images", "answerkey")
+        self.image_folder = os.path.join(os.getcwd(), "images", "has")
         os.makedirs(self.image_folder, exist_ok=True)  # Ensure the folder exists
+
         self._ui.actionAbout_Qt.triggered.connect(qApp.aboutQt)  # noqa: F821
 
         # disable all buttons by default
@@ -217,12 +209,10 @@ class HAS_Camera(QMainWindow):
         if active:
             self._ui.actionStartCamera.setEnabled(False)
             self._ui.actionStopCamera.setEnabled(True)
-            #self._ui.captureFrame.setEnabled(True)
             self._ui.actionSettings.setEnabled(True)
         else:
             self._ui.actionStartCamera.setEnabled(True)
             self._ui.actionStopCamera.setEnabled(False)
-            #self._ui.captureFrame.setEnabled(False)
             self._ui.actionSettings.setEnabled(False)
 
 
@@ -256,9 +246,8 @@ class HAS_Camera(QMainWindow):
             os.makedirs(self.image_folder, exist_ok=True)
 
         # Generate dynamic file path
-        file_path = os.path.join(self.image_folder, f"image{self.image_counter}.jpg")
-        self.image_counter += 1  # Increment image number for next capture
-        
+        file_path = os.path.join(self.image_folder, f"{datetime.now().strftime("%Y%m%d%H%M%S")}.jpg")
+
         # Capture image to specified path
         self.m_imageCapture.captureToFile(QDir.toNativeSeparators(file_path)) 
 
@@ -304,57 +293,42 @@ class HAS_Camera(QMainWindow):
         self.OCRProcessing(f)
 
 
-    def OCRProcessing(self, file):
+    ################################################################################
+    # OCR and AI Threads
+
+    def OCRProcessing(self, file):         
         has_latex = GeminiOCR(file)
         print(has_latex)
         self.startLatexThread(has_latex)
         self.startOutputThread(self.answer_key_id, self.fa_weight, self.ak_latex, has_latex)
 
-    ################################################################################
-    # Threads
-
     def startLatexThread(self, has_latex):
-        """Launch a thread to process LaTeX rendering for the given image."""
-        # Create worker and thread for LaTeX processing
-        self.latexWorker = LatexWorker(has_latex)
-        self.latexThread = QThread(self)  # make thread a child of main window (for automatic cleanup)
-        self.latexWorker.moveToThread(self.latexThread)
-        # When thread starts, call worker.run
-        self.latexThread.started.connect(self.latexWorker.run)
-        # Connect worker signals back to main UI slots
-        self.latexWorker.resultReady.connect(self.onLatexResult)     # handle result in main thread
-        self.latexWorker.finished.connect(self.latexThread.quit)
-        self.latexWorker.finished.connect(self.latexWorker.deleteLater)
-        self.latexThread.finished.connect(self.latexThread.deleteLater)
-        # Start the thread (will emit started, triggering worker.run)
-        self.latexThread.start()
+        """Launch LaTeX processing thread efficiently."""
+        worker = LatexWorker(has_latex, self.onLatexResult)
+        threadpool.start(worker)  # Use thread pool
 
     @Slot(str)
-    def onLatexResult(self, latex_str:str):
-        """Slot to receive LaTeX result from LatexWorker (executed in main thread)."""
-        # Update the QLabel (solution) in the UI with the LaTeX output
-        self._ui.label_latex.setText(latex_str)
-        # Optionally, if latex_str is raw LaTeX, we could format it or display an image.
-        # Ensure this update happens in main thread (which it does, because this is a Qt slot).
+    def onLatexResult(self, html_content):
+        self._ui.web_latex.setHtml(html_content)
 
-        # After getting LaTeX, start the other threads for web rendering and DB operations
-        #self.startDbThread(self.currentImagePath, latex_str)  # using stored current image path
+    def startOutputThread(self, answer_key_id, fa_weight, ak_latex, has_latex):
+        worker = OutputWorker(answer_key_id, fa_weight, ak_latex, has_latex, self.onFrameResult)
+        threadpool.start(worker)  # Use thread pool
 
-    def startOutputThread(self, latex_str):
-        self.outputWorker = OutputWorker(latex_str)
-        self.outputThread = QThread(self)
-        self.outputWorker.moveToThread(self.outputThread)
-        self.outputThread.started.connect(self.outputWorker.run)
-        self.outputWorker.resultReady.connect(self.onWebResult)
-        self.outputWorker.finished.connect(self.outputThread.quit)
-        self.outputWorker.finished.connect(self.outputWorker.deleteLater)
-        self.outputThread.finished.connect(self.outputThread.deleteLater)
-        self.outputThread.start()
-
-    @Slot(str)
-    def onWebResult(self, html_content):
+    @Slot(str, str)
+    def onFrameResult(self, html_content, result_json: str):
+        #Slot to receive LaTeX result from LatexWorker (executed in main thread).
+        result_dict = json.loads(result_json)  # Convert JSON string back to dictionary
+        result = Response_for_HAS(**result_dict)  # Convert dict back to Pydantic model
         self._ui.web_result.setHtml(html_content)
+        correct_steps = result.sol_substituted_formula or None
+        sol_grade = result.sol_grade_integer or 0
+        fa_grade = result.fa_grade_integer or 0
+        overall_grade = result.overall_grade_integer or 0
 
+        self._ui.label_sol_grade.setText(f"Solution:\n&nbsp;{correct_steps} = {sol_grade}%")
+        self._ui.label_fa_grade.setText(f"Final Answer:\n&nbsp;&nbsp;{fa_grade}% (/{self.fa_weight}%)")
+        self._ui.label_overall_grade.setText(f"Overall:\n&nbsp;&nbsp;{overall_grade}%")
 
     ################################################################################
     # Close window

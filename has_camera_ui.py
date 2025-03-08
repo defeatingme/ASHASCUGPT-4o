@@ -372,12 +372,9 @@ class Ui_Camera(object):
         self.push_back.setText(QCoreApplication.translate("Camera", u"Back to Session", None))
         self.label_latex.setText(QCoreApplication.translate("Camera", u"Solution in LaTeX", None))
         self.label_result.setText(QCoreApplication.translate("Camera", u"Result:", None))
-        self.label_sol_grade.setText(QCoreApplication.translate("Camera", u"Solution:\n"
-"{sol_grade}", None))
-        self.label_fa_grade.setText(QCoreApplication.translate("Camera", u"Final Answer:\n"
-"{fa_grade}", None))
-        self.label_overall_grade.setText(QCoreApplication.translate("Camera", u"Overall:\n"
-"{overall_grade}", None))
+        self.label_sol_grade.setText(QCoreApplication.translate("Camera", u"Solution:\n0%", None))
+        self.label_fa_grade.setText(QCoreApplication.translate("Camera", u"Final Answer:\n0%", None))
+        self.label_overall_grade.setText(QCoreApplication.translate("Camera", u"Overall:\n0%", None))
         self.label_counter.setText(QCoreApplication.translate("Camera", u"No. of solution checked: {has_counter}", None))
         self.label_last_name.setText(QCoreApplication.translate("Camera", u"Last checked from: {has_name}", None))
         self.edit_student_name.setText("")

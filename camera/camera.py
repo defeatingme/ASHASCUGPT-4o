@@ -149,25 +149,7 @@ class Camera(QMainWindow):
         self.m_camera.start()
 
     def keyPressEvent(self, event):
-        if event.isAutoRepeat():
-            return
-
-        key = event.key()
-        if key == Qt.Key.Key_CameraFocus:
-            self.displayViewfinder()
-            event.accept()
-        elif key == Qt.Key.Key_Camera:
-            if self.m_doImageCapture:
-                self.takeImage()
-            else:
-                if self.m_mediaRecorder.recorderState() == QMediaRecorder.RecordingState:
-                    self.stop()
-                else:
-                    self.record()
-
-            event.accept()
-        else:
-            super().keyPressEvent(event)
+        pass
 
     @Slot()
     def updateRecordTime(self):
@@ -369,3 +351,8 @@ class Camera(QMainWindow):
                     data.insert(key, val)
 
         self.m_mediaRecorder.setMetaData(data)
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    camera = Camera()
+    camera.show()
+    sys.exit(app.exec())
