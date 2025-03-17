@@ -1,110 +1,87 @@
-import psycopg2
+from sqlalchemy import create_engine, Column, String, Integer, Float, Text, Boolean, TIMESTAMP, ForeignKey, LargeBinary, func
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.exc import SQLAlchemyError
+import datetime
 
-# PostgreSQL Connection Details
+# SQLAlchemy Database Connection Details
 DB_NAME = "algeval"
 DB_USER = "postgres"
 DB_PASSWORD = "ashascugpt4o"
 DB_HOST = "localhost"
 DB_PORT = "5432"
 
-def engine():
-    """Reusable function to establish a PostgreSQL database connection."""
+DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+# Create SQLAlchemy engine and session
+engine = create_engine(DATABASE_URL)
+Session = sessionmaker(bind=engine)
+Base = declarative_base()
+database_func = func
+# Define the Instructor table
+class Instructor(Base):
+    __tablename__ = 'Instructor'
+    
+    instructor_name = Column(String(255), primary_key=True)
+    email = Column(Text)
+    department = Column(Text)
+    created_at = Column(TIMESTAMP, default=datetime.datetime.utcnow)
+
+# Define the Sessions table
+class Sessions(Base):
+    __tablename__ = 'Sessions'
+    
+    session_id = Column(String(255), primary_key=True)
+    instructor_name = Column(String(255), nullable=False)
+    created_at = Column(TIMESTAMP, default=datetime.datetime.utcnow)
+    
+    instructor = relationship("Instructor", backref="sessions", uselist=False)
+    instructor_name = Column(String(255), ForeignKey('Instructor.instructor_name', ondelete="CASCADE"))
+
+# Define the AnswerKey table
+class AnswerKey(Base):
+    __tablename__ = 'AnswerKey'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    session_id = Column(String(255), nullable=False)
+    sol_weight = Column(Float, nullable=False)
+    fa_weight = Column(Float, nullable=False)
+    ak_latex = Column(Text, nullable=False)
+    ak_file = Column(LargeBinary, nullable=True)
+    created_at = Column(TIMESTAMP, default=datetime.datetime.utcnow)
+    
+    session = relationship("Sessions", backref="answer_keys")
+    session_id = Column(String(255), ForeignKey('Sessions.session_id', ondelete="CASCADE"))
+
+# Define the StudentHAS table
+class StudentHAS(Base):
+    __tablename__ = 'StudentHAS'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    answer_key_id = Column(Integer, nullable=False)
+    has_name = Column(Text)
+    has_latex = Column(Text, nullable=False)
+    result = Column(Text, nullable=False)
+    sol_fraction = Column(Text, nullable=True)
+    sol_grade = Column(Float, nullable=False)
+    fa_grade = Column(Float, nullable=False)
+    overall_grade = Column(Float, nullable=False)
+    used_asm = Column(Boolean, default=False, nullable=False)
+    has_file = Column(LargeBinary, nullable=True)
+    created_at = Column(TIMESTAMP, default=datetime.datetime.utcnow)
+    
+    answer_key = relationship("AnswerKey", backref="student_has")
+    answer_key_id = Column(Integer, ForeignKey('AnswerKey.id', ondelete="CASCADE"))
+
+def setup_tables():
+    """Ensure all tables exist before storing data."""
     try:
-        conn = psycopg2.connect(
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            host=DB_HOST,
-            port=DB_PORT
-        )
-        return conn
-    except Exception as e:
-        print(f"Database Connection Error: {e}")
-        return None
+        # Create all tables
+        Base.metadata.create_all(engine)
+        print("All tables set up successfully.")
+    except SQLAlchemyError as e:
+        print(f"Database Setup Error: {e}")
 
-def setup_Instructor():
-    """Ensure Instructor table exists before storing data."""
-    conn = engine()
-    if conn:
-        try:
-            cursor = conn.cursor()
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS Instructor (
-                    instructor_name VARCHAR(255) PRIMARY KEY,
-                    email TEXT,
-                    department TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-            conn.commit()
-            conn.close()
-        except Exception as e:
-            print(f"Database Setup Error (Instructor): {e}")
-
-def setup_Sessions():
-    """Ensure Sessions table exists before storing data."""
-    conn = engine()
-    if conn:
-        try:
-            cursor = conn.cursor()
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS Sessions (
-                    session_id VARCHAR(255) PRIMARY KEY,
-                    instructor_name VARCHAR(255) NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (instructor_name) REFERENCES Instructor(instructor_name) ON DELETE CASCADE
-                )
-            """)
-            conn.commit()
-            conn.close()
-        except Exception as e:
-            print(f"Database Setup Error (Sessions): {e}")
-
-def setup_AnswerKey():
-    """Ensure AnswerKey table exists before storing data."""
-    conn = engine()
-    if conn:
-        try:
-            cursor = conn.cursor()
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS AnswerKey (
-                    id SERIAL PRIMARY KEY,
-                    session_id VARCHAR(255) NOT NULL,
-                    sol_weight FLOAT NOT NULL,
-                    fa_weight FLOAT NOT NULL,
-                    ak_latex TEXT NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (session_id) REFERENCES Sessions(session_id) ON DELETE CASCADE
-                )
-            """)
-            conn.commit()
-            conn.close()
-        except Exception as e:
-            print(f"Database Setup Error (AnswerKey): {e}")
-
-def setup_StudentHAS():
-    """Ensure StudentHAS table exists before storing data."""
-    conn = engine()
-    if conn:
-        try:
-            cursor = conn.cursor()
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS StudentHAS (
-                    id SERIAL PRIMARY KEY,
-                    answer_key_id INT NOT NULL,
-                    has_name TEXT,
-                    has_latex TEXT NOT NULL,
-                    result TEXT NOT NULL,
-                    sol_fraction NOT NULL,
-                    sol_grade FLOAT NOT NULL,
-                    fa_grade FLOAT NOT NULL,
-                    overall_grade FLOAT NOT NULL,
-                    used_asm BOOLEAN NOT NULL DEFAULT FALSE,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (answer_key_id) REFERENCES AnswerKey(id) ON DELETE CASCADE
-                )
-            """)
-            conn.commit()
-            conn.close()
-        except Exception as e:
-            print(f"Database Setup Error (StudentHAS): {e}")
+# Call the setup_tables function to create the tables
+if __name__ == "__main__":
+    setup_tables()

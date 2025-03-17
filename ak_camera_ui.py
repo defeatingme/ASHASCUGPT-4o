@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ak_camera_ui.ui'
+## Form generated from reading UI file 'ak_camera_ui_2.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.2
 ##
@@ -17,102 +17,160 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtMultimediaWidgets import QVideoWidget
+from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QLabel,
     QMainWindow, QMenu, QMenuBar, QPushButton,
     QSizePolicy, QSlider, QStackedWidget, QStatusBar,
-    QWidget)
+    QTabWidget, QWidget)
 
-class Ui_AK_Camera(object):
-    def setupUi(self, AK_Camera):
-        if not AK_Camera.objectName():
-            AK_Camera.setObjectName(u"AK_Camera")
-        AK_Camera.resize(1080, 720)
-        AK_Camera.setStyleSheet(u"background-color:qconicalgradient(cx:0, cy:1, angle:159.4, stop:0 rgba(212, 161, 205, 255), stop:1 rgba(71, 71, 71, 255))")
-        self.actionExit = QAction(AK_Camera)
+class Ui_Camera(object):
+    def setupUi(self, Camera):
+        if not Camera.objectName():
+            Camera.setObjectName(u"Camera")
+        Camera.resize(1080, 720)
+        Camera.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(48, 48, 48, 255), stop:1 rgba(64, 64, 64, 255))")
+        self.actionExit = QAction(Camera)
         self.actionExit.setObjectName(u"actionExit")
-        self.actionStartCamera = QAction(AK_Camera)
+        self.actionStartCamera = QAction(Camera)
         self.actionStartCamera.setObjectName(u"actionStartCamera")
-        self.actionStopCamera = QAction(AK_Camera)
+        self.actionStopCamera = QAction(Camera)
         self.actionStopCamera.setObjectName(u"actionStopCamera")
-        self.actionSettings = QAction(AK_Camera)
+        self.actionSettings = QAction(Camera)
         self.actionSettings.setObjectName(u"actionSettings")
-        self.actionAbout_Qt = QAction(AK_Camera)
+        self.actionAbout_Qt = QAction(Camera)
         self.actionAbout_Qt.setObjectName(u"actionAbout_Qt")
-        self.centralwidget = QWidget(AK_Camera)
+        self.centralwidget = QWidget(Camera)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.captureFrame = QFrame(self.centralwidget)
-        self.captureFrame.setObjectName(u"captureFrame")
-        self.captureFrame.setGeometry(QRect(110, 560, 611, 71))
-        self.exposureCompensation = QSlider(self.captureFrame)
-        self.exposureCompensation.setObjectName(u"exposureCompensation")
-        self.exposureCompensation.setGeometry(QRect(40, 40, 141, 21))
-        self.exposureCompensation.setStyleSheet(u"background-color: None;\n"
-"border: None\n"
+        self.captureWidget = QTabWidget(self.centralwidget)
+        self.captureWidget.setObjectName(u"captureWidget")
+        self.captureWidget.setGeometry(QRect(750, 440, 321, 131))
+        self.captureWidget.setStyleSheet(u"border: 1px solid rgb(208, 172, 220);\n"
+"background-color: rgb(48, 48, 48);\n"
+"border-radius: 2px;\n"
+"color: rgb(224, 224, 224);\n"
 "")
+        self.tab_2 = QWidget()
+        self.tab_2.setObjectName(u"tab_2")
+        self.takeImageButton = QPushButton(self.tab_2)
+        self.takeImageButton.setObjectName(u"takeImageButton")
+        self.takeImageButton.setEnabled(False)
+        self.takeImageButton.setGeometry(QRect(10, 70, 291, 21))
+        font = QFont()
+        font.setFamilies([u"Arial"])
+        font.setPointSize(10)
+        font.setBold(True)
+        self.takeImageButton.setFont(font)
+        self.takeImageButton.setStyleSheet(u"QPushButton {\n"
+"background-color: rgb(32, 32, 32);\n"
+"color: rgb(208, 172, 220);\n"
+"border: 1px solid rgb(208, 172, 220);\n"
+"border-radius: 4px\n"
+"}\n"
+"QPushButton:disabled {\n"
+"background-color: rgb(48, 48, 48);\n"
+"color:  rgb(128, 128, 128);\n"
+"border: 1px solid rgb(128, 128, 128);\n"
+"border-radius: 4px\n"
+"}\n"
+"")
+        self.exposureCompensation = QSlider(self.tab_2)
+        self.exposureCompensation.setObjectName(u"exposureCompensation")
+        self.exposureCompensation.setGeometry(QRect(70, 30, 181, 30))
+        self.exposureCompensation.setStyleSheet(u"background-color: None;\n"
+"border: None;")
         self.exposureCompensation.setMinimum(-4)
         self.exposureCompensation.setMaximum(4)
         self.exposureCompensation.setPageStep(2)
         self.exposureCompensation.setOrientation(Qt.Orientation.Horizontal)
         self.exposureCompensation.setTickPosition(QSlider.TickPosition.TicksAbove)
-        self.label_exposure = QLabel(self.captureFrame)
-        self.label_exposure.setObjectName(u"label_exposure")
-        self.label_exposure.setGeometry(QRect(40, 0, 141, 41))
-        font = QFont()
-        font.setBold(True)
-        self.label_exposure.setFont(font)
-        self.label_exposure.setStyleSheet(u"background-color: None;\n"
-"border: None;\n"
-"color: #eee;")
-        self.label_exposure.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.takeImageButton = QPushButton(self.captureFrame)
-        self.takeImageButton.setObjectName(u"takeImageButton")
-        self.takeImageButton.setEnabled(False)
-        self.takeImageButton.setGeometry(QRect(240, 10, 141, 24))
+        self.label = QLabel(self.tab_2)
+        self.label.setObjectName(u"label")
+        self.label.setGeometry(QRect(10, 10, 161, 16))
         font1 = QFont()
         font1.setFamilies([u"Arial"])
         font1.setPointSize(10)
-        font1.setBold(True)
-        self.takeImageButton.setFont(font1)
-        self.takeImageButton.setStyleSheet(u"background-color: #333;\n"
-"color: rgb(208, 172, 220)\n"
-"")
-        self.push_retake = QPushButton(self.captureFrame)
-        self.push_retake.setObjectName(u"push_retake")
-        self.push_retake.setGeometry(QRect(240, 40, 141, 21))
-        self.push_retake.setFont(font1)
-        self.push_retake.setStyleSheet(u"background-color: #333;\n"
-"color: rgb(208, 172, 220)\n"
-"")
-        self.push_retake.setCheckable(False)
-        self.push_start = QPushButton(self.captureFrame)
-        self.push_start.setObjectName(u"push_start")
-        self.push_start.setGeometry(QRect(410, 30, 181, 25))
-        self.push_start.setFont(font1)
-        self.push_start.setStyleSheet(u"background-color: #333;\n"
-"color: rgb(208, 172, 220)\n"
-"")
-        self.push_start.setCheckable(False)
+        font1.setBold(False)
+        self.label.setFont(font1)
+        self.label.setStyleSheet(u"background-color: None;\n"
+"border: None;\n"
+"color:  rgb(224, 224, 224)")
+        self.captureWidget.addTab(self.tab_2, "")
         self.stackedWidget = QStackedWidget(self.centralwidget)
         self.stackedWidget.setObjectName(u"stackedWidget")
-        self.stackedWidget.setGeometry(QRect(20, 10, 720, 540))
+        self.stackedWidget.setGeometry(QRect(0, 0, 740, 680))
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
         self.stackedWidget.setSizePolicy(sizePolicy)
         palette = QPalette()
-        brush = QBrush(QColor(71, 71, 71, 255))
-        brush.setStyle(Qt.SolidPattern)
+        gradient = QLinearGradient(1, 1, 1, 0)
+        gradient.setSpread(QGradient.PadSpread)
+        gradient.setCoordinateMode(QGradient.ObjectBoundingMode)
+        gradient.setColorAt(0, QColor(64, 64, 64, 255))
+        gradient.setColorAt(1, QColor(48, 48, 48, 255))
+        brush = QBrush(gradient)
         palette.setBrush(QPalette.Active, QPalette.Button, brush)
-        palette.setBrush(QPalette.Active, QPalette.Base, brush)
-        palette.setBrush(QPalette.Active, QPalette.Window, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.Button, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.Base, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.Window, brush)
-        palette.setBrush(QPalette.Disabled, QPalette.Button, brush)
-        palette.setBrush(QPalette.Disabled, QPalette.Base, brush)
-        palette.setBrush(QPalette.Disabled, QPalette.Window, brush)
+        gradient1 = QLinearGradient(1, 1, 1, 0)
+        gradient1.setSpread(QGradient.PadSpread)
+        gradient1.setCoordinateMode(QGradient.ObjectBoundingMode)
+        gradient1.setColorAt(0, QColor(64, 64, 64, 255))
+        gradient1.setColorAt(1, QColor(48, 48, 48, 255))
+        brush1 = QBrush(gradient1)
+        palette.setBrush(QPalette.Active, QPalette.Base, brush1)
+        gradient2 = QLinearGradient(1, 1, 1, 0)
+        gradient2.setSpread(QGradient.PadSpread)
+        gradient2.setCoordinateMode(QGradient.ObjectBoundingMode)
+        gradient2.setColorAt(0, QColor(64, 64, 64, 255))
+        gradient2.setColorAt(1, QColor(48, 48, 48, 255))
+        brush2 = QBrush(gradient2)
+        palette.setBrush(QPalette.Active, QPalette.Window, brush2)
+        gradient3 = QLinearGradient(1, 1, 1, 0)
+        gradient3.setSpread(QGradient.PadSpread)
+        gradient3.setCoordinateMode(QGradient.ObjectBoundingMode)
+        gradient3.setColorAt(0, QColor(64, 64, 64, 255))
+        gradient3.setColorAt(1, QColor(48, 48, 48, 255))
+        brush3 = QBrush(gradient3)
+        palette.setBrush(QPalette.Inactive, QPalette.Button, brush3)
+        gradient4 = QLinearGradient(1, 1, 1, 0)
+        gradient4.setSpread(QGradient.PadSpread)
+        gradient4.setCoordinateMode(QGradient.ObjectBoundingMode)
+        gradient4.setColorAt(0, QColor(64, 64, 64, 255))
+        gradient4.setColorAt(1, QColor(48, 48, 48, 255))
+        brush4 = QBrush(gradient4)
+        palette.setBrush(QPalette.Inactive, QPalette.Base, brush4)
+        gradient5 = QLinearGradient(1, 1, 1, 0)
+        gradient5.setSpread(QGradient.PadSpread)
+        gradient5.setCoordinateMode(QGradient.ObjectBoundingMode)
+        gradient5.setColorAt(0, QColor(64, 64, 64, 255))
+        gradient5.setColorAt(1, QColor(48, 48, 48, 255))
+        brush5 = QBrush(gradient5)
+        palette.setBrush(QPalette.Inactive, QPalette.Window, brush5)
+        gradient6 = QLinearGradient(1, 1, 1, 0)
+        gradient6.setSpread(QGradient.PadSpread)
+        gradient6.setCoordinateMode(QGradient.ObjectBoundingMode)
+        gradient6.setColorAt(0, QColor(64, 64, 64, 255))
+        gradient6.setColorAt(1, QColor(48, 48, 48, 255))
+        brush6 = QBrush(gradient6)
+        palette.setBrush(QPalette.Disabled, QPalette.Button, brush6)
+        gradient7 = QLinearGradient(1, 1, 1, 0)
+        gradient7.setSpread(QGradient.PadSpread)
+        gradient7.setCoordinateMode(QGradient.ObjectBoundingMode)
+        gradient7.setColorAt(0, QColor(64, 64, 64, 255))
+        gradient7.setColorAt(1, QColor(48, 48, 48, 255))
+        brush7 = QBrush(gradient7)
+        palette.setBrush(QPalette.Disabled, QPalette.Base, brush7)
+        gradient8 = QLinearGradient(1, 1, 1, 0)
+        gradient8.setSpread(QGradient.PadSpread)
+        gradient8.setCoordinateMode(QGradient.ObjectBoundingMode)
+        gradient8.setColorAt(0, QColor(64, 64, 64, 255))
+        gradient8.setColorAt(1, QColor(48, 48, 48, 255))
+        brush8 = QBrush(gradient8)
+        palette.setBrush(QPalette.Disabled, QPalette.Window, brush8)
         self.stackedWidget.setPalette(palette)
+        self.stackedWidget.setStyleSheet(u"border: 1px solid rgb(208, 172, 220);\n"
+"background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(64, 64, 64, 255), stop:1 rgba(48, 48, 48, 255));\n"
+"")
         self.viewfinderPage = QWidget()
         self.viewfinderPage.setObjectName(u"viewfinderPage")
         self.gridLayout_5 = QGridLayout(self.viewfinderPage)
@@ -139,60 +197,117 @@ class Ui_AK_Camera(object):
         self.gridLayout_4.addWidget(self.lastImagePreviewLabel, 0, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.previewPage)
+        self.push_save = QPushButton(self.centralwidget)
+        self.push_save.setObjectName(u"push_save")
+        self.push_save.setGeometry(QRect(750, 610, 321, 25))
+        self.push_save.setFont(font)
+        self.push_save.setStyleSheet(u"QPushButton {\n"
+"background-color: rgb(32, 32, 32);\n"
+"color: rgb(208, 172, 220);\n"
+"border: 1px solid rgb(208, 172, 220);\n"
+"border-radius: 4px\n"
+"}\n"
+"QPushButton:disabled {\n"
+"background-color: rgb(48, 48, 48);\n"
+"color:  rgb(128, 128, 128);\n"
+"border: 1px solid rgb(128, 128, 128);\n"
+"border-radius: 4px\n"
+"}\n"
+"")
+        self.push_save.setCheckable(False)
         self.push_back = QPushButton(self.centralwidget)
         self.push_back.setObjectName(u"push_back")
-        self.push_back.setGeometry(QRect(20, 650, 121, 21))
+        self.push_back.setGeometry(QRect(750, 650, 121, 21))
         font2 = QFont()
         font2.setFamilies([u"Arial"])
         font2.setPointSize(10)
         self.push_back.setFont(font2)
-        self.push_back.setStyleSheet(u"background-color: #333;\n"
-"color: rgb(208, 172, 220)\n"
+        self.push_back.setStyleSheet(u"QPushButton {\n"
+"background-color: rgb(32, 32, 32);\n"
+"color: rgb(208, 172, 220);\n"
+"border: 1px solid rgb(208, 172, 220);\n"
+"border-radius: 4px\n"
+"}\n"
+"QPushButton:disabled {\n"
+"background-color: rgb(48, 48, 48);\n"
+"color:  rgb(128, 128, 128);\n"
+"border: 1px solid rgb(128, 128, 128);\n"
+"border-radius: 4px\n"
+"}\n"
 "")
         self.push_back.setCheckable(False)
-        self.label_latex = QLabel(self.centralwidget)
+        self.frame_latex = QFrame(self.centralwidget)
+        self.frame_latex.setObjectName(u"frame_latex")
+        self.frame_latex.setGeometry(QRect(750, 10, 321, 420))
+        self.frame_latex.setStyleSheet(u"border: 1px solid  rgb(208, 172, 220);\n"
+"background-color: rgb(96, 96, 96);\n"
+"border-radius: 2px\n"
+"")
+        self.frame_latex.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_latex.setFrameShadow(QFrame.Shadow.Raised)
+        self.web_latex = QWebEngineView(self.frame_latex)
+        self.web_latex.setObjectName(u"web_latex")
+        self.web_latex.setGeometry(QRect(0, 20, 321, 400))
+        self.web_latex.setStyleSheet(u"background-color: rgb(64, 64, 64);\n"
+"border: 1px solid rgb(208, 172, 220)")
+        self.label_latex = QLabel(self.frame_latex)
         self.label_latex.setObjectName(u"label_latex")
-        self.label_latex.setGeometry(QRect(750, 20, 300, 400))
-        self.label_latex.setFont(font2)
-        self.label_latex.setStyleSheet(u"background-color: #eee;\n"
-"color: #333")
-        self.label_latex.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.label_ak = QLabel(self.centralwidget)
-        self.label_ak.setObjectName(u"label_ak")
-        self.label_ak.setGeometry(QRect(750, 0, 241, 21))
+        self.label_latex.setGeometry(QRect(0, 0, 321, 21))
         font3 = QFont()
         font3.setFamilies([u"Arial"])
         font3.setPointSize(10)
-        font3.setBold(True)
+        font3.setBold(False)
         font3.setUnderline(False)
-        self.label_ak.setFont(font3)
-        self.label_ak.setStyleSheet(u"background-color: None;\n"
-"color: #eee")
-        self.label_ak.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
-        self.label_image = QLabel(self.centralwidget)
-        self.label_image.setObjectName(u"label_image")
-        self.label_image.setGeometry(QRect(780, 430, 240, 240))
-        self.label_image.setStyleSheet(u"border: 1px solid  #eee;\n"
-"background-color: rgb(71, 71, 71);\n"
-"color: #eee")
-        self.label_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        AK_Camera.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(AK_Camera)
+        self.label_latex.setFont(font3)
+        self.label_latex.setStyleSheet(u"color: rgb(224, 224, 224);\n"
+"background-color: rgb(48, 48, 48);\n"
+"")
+        self.label_latex.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+        self.push_size = QPushButton(self.centralwidget)
+        self.push_size.setObjectName(u"push_size")
+        self.push_size.setGeometry(QRect(760, 580, 301, 21))
+        self.push_size.setFont(font1)
+        self.push_size.setStyleSheet(u"QPushButton {\n"
+"background-color: rgb(32, 32, 32);\n"
+"color: rgb(208, 172, 220);\n"
+"border: 1px solid rgb(208, 172, 220);\n"
+"border-radius: 4px\n"
+"}\n"
+"QPushButton:disabled {\n"
+"background-color: rgb(48, 48, 48);\n"
+"color:  rgb(128, 128, 128);\n"
+"border: 1px solid rgb(128, 128, 128);\n"
+"border-radius: 4px\n"
+"}\n"
+"")
+        self.push_size.setCheckable(False)
+        self.label_time = QLabel(self.centralwidget)
+        self.label_time.setObjectName(u"label_time")
+        self.label_time.setGeometry(QRect(970, 430, 101, 20))
+        font4 = QFont()
+        font4.setPointSize(10)
+        self.label_time.setFont(font4)
+        self.label_time.setStyleSheet(u"background-color: None;\n"
+"color: rgb(208, 172, 220);")
+        self.label_time.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
+        Camera.setCentralWidget(self.centralwidget)
+        self.menubar = QMenuBar(Camera)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 1080, 21))
-        self.menubar.setStyleSheet(u"background-color: #eee; \n"
-"color: #333")
+        self.menubar.setStyleSheet(u"background-color: rgb(48, 48, 48);\n"
+"color: rgb(224, 224, 224)")
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         self.menuDevices = QMenu(self.menubar)
         self.menuDevices.setObjectName(u"menuDevices")
         self.menuHelp = QMenu(self.menubar)
         self.menuHelp.setObjectName(u"menuHelp")
-        AK_Camera.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(AK_Camera)
+        Camera.setMenuBar(self.menubar)
+        self.statusbar = QStatusBar(Camera)
         self.statusbar.setObjectName(u"statusbar")
-        self.statusbar.setStyleSheet(u"background-color: #eee")
-        AK_Camera.setStatusBar(self.statusbar)
+        self.statusbar.setStyleSheet(u"color: rgb(224, 224, 224);\n"
+"background-color: rgb(64, 64, 64)")
+        Camera.setStatusBar(self.statusbar)
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuDevices.menuAction())
@@ -205,43 +320,42 @@ class Ui_AK_Camera(object):
         self.menuFile.addAction(self.actionExit)
         self.menuHelp.addAction(self.actionAbout_Qt)
 
-        self.retranslateUi(AK_Camera)
-        self.takeImageButton.clicked.connect(AK_Camera.takeImage)
-        self.exposureCompensation.valueChanged.connect(AK_Camera.setExposureCompensation)
-        self.actionExit.triggered.connect(AK_Camera.close)
-        self.actionSettings.triggered.connect(AK_Camera.configureCaptureSettings)
-        self.actionStartCamera.triggered.connect(AK_Camera.startCamera)
-        self.actionStopCamera.triggered.connect(AK_Camera.stopCamera)
+        self.retranslateUi(Camera)
+        self.actionExit.triggered.connect(Camera.close)
+        self.takeImageButton.clicked.connect(Camera.takeImage)
+        self.exposureCompensation.valueChanged.connect(Camera.setExposureCompensation)
+        self.actionSettings.triggered.connect(Camera.configureCaptureSettings)
+        self.actionStartCamera.triggered.connect(Camera.startCamera)
+        self.actionStopCamera.triggered.connect(Camera.stopCamera)
 
+        self.captureWidget.setCurrentIndex(0)
         self.stackedWidget.setCurrentIndex(0)
 
 
-        QMetaObject.connectSlotsByName(AK_Camera)
+        QMetaObject.connectSlotsByName(Camera)
     # setupUi
 
-    def retranslateUi(self, AK_Camera):
-        AK_Camera.setWindowTitle(QCoreApplication.translate("AK_Camera", u"Camera", None))
-        self.actionExit.setText(QCoreApplication.translate("AK_Camera", u"Quit", None))
+    def retranslateUi(self, Camera):
+        Camera.setWindowTitle(QCoreApplication.translate("Camera", u"Camera", None))
+        self.actionExit.setText(QCoreApplication.translate("Camera", u"Quit", None))
 #if QT_CONFIG(shortcut)
-        self.actionExit.setShortcut(QCoreApplication.translate("AK_Camera", u"Ctrl+Q", None))
+        self.actionExit.setShortcut(QCoreApplication.translate("Camera", u"Ctrl+Q", None))
 #endif // QT_CONFIG(shortcut)
-        self.actionStartCamera.setText(QCoreApplication.translate("AK_Camera", u"Start Camera", None))
-        self.actionStopCamera.setText(QCoreApplication.translate("AK_Camera", u"Stop Camera", None))
-        self.actionSettings.setText(QCoreApplication.translate("AK_Camera", u"Change Settings", None))
-        self.actionAbout_Qt.setText(QCoreApplication.translate("AK_Camera", u"About Qt", None))
-        self.label_exposure.setText(QCoreApplication.translate("AK_Camera", u"Exposure Compensation:", None))
-        self.takeImageButton.setText(QCoreApplication.translate("AK_Camera", u"Capture", None))
-        self.push_retake.setText(QCoreApplication.translate("AK_Camera", u"Retake", None))
-        self.push_start.setText(QCoreApplication.translate("AK_Camera", u"Submit Answer Key", None))
+        self.actionStartCamera.setText(QCoreApplication.translate("Camera", u"Start Camera", None))
+        self.actionStopCamera.setText(QCoreApplication.translate("Camera", u"Stop Camera", None))
+        self.actionSettings.setText(QCoreApplication.translate("Camera", u"Change Settings", None))
+        self.actionAbout_Qt.setText(QCoreApplication.translate("Camera", u"About Qt", None))
+        self.takeImageButton.setText(QCoreApplication.translate("Camera", u"Capture image", None))
+        self.label.setText(QCoreApplication.translate("Camera", u"Exposure Compensation:", None))
+        self.captureWidget.setTabText(self.captureWidget.indexOf(self.tab_2), QCoreApplication.translate("Camera", u"Image", None))
         self.lastImagePreviewLabel.setText("")
-        self.push_back.setText(QCoreApplication.translate("AK_Camera", u"Back to Home", None))
-        self.label_latex.setText(QCoreApplication.translate("AK_Camera", u"Rendered LaTeX\n"
-"300x400px", None))
-        self.label_ak.setText(QCoreApplication.translate("AK_Camera", u"Answer Key in LaTeX", None))
-        self.label_image.setText(QCoreApplication.translate("AK_Camera", u"Image Preview\n"
-"240x240", None))
-        self.menuFile.setTitle(QCoreApplication.translate("AK_Camera", u"File", None))
-        self.menuDevices.setTitle(QCoreApplication.translate("AK_Camera", u"Devices", None))
-        self.menuHelp.setTitle(QCoreApplication.translate("AK_Camera", u"Help", None))
+        self.push_save.setText(QCoreApplication.translate("Camera", u"Submit answer key", None))
+        self.push_back.setText(QCoreApplication.translate("Camera", u"Back to Session", None))
+        self.label_latex.setText(QCoreApplication.translate("Camera", u"Solution in LaTeX", None))
+        self.push_size.setText(QCoreApplication.translate("Camera", u"View character sizes", None))
+        self.label_time.setText(QCoreApplication.translate("Camera", u"Runtime: 0.00s", None))
+        self.menuFile.setTitle(QCoreApplication.translate("Camera", u"File", None))
+        self.menuDevices.setTitle(QCoreApplication.translate("Camera", u"Devices", None))
+        self.menuHelp.setTitle(QCoreApplication.translate("Camera", u"Help", None))
     # retranslateUi
 

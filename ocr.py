@@ -4,7 +4,7 @@ import time
 
 print("imports done")
 # System runtime timer
-start_timer = time.time()
+
 
 genai.configure(api_key="AIzaSyA8E5xI2z_K9D14--1yN62zjIVnFVcfvI4") # Replace with your API Key
 
@@ -15,8 +15,6 @@ def upload_to_gemini(path, mime_type=None):
     return file
 
 def GeminiOCR(image):
-    # Upload to gemini all the images from the folder
-    upload = [upload_to_gemini(image, mime_type="image/png")]
 
     # commands the ai will follow
     rules = (
@@ -41,12 +39,7 @@ def GeminiOCR(image):
     )
 
     chat_session = model.start_chat(history=[{"role": "user", "parts": [rules]}])
-
-    response = chat_session.send_message(upload) # gemini prompt
-
-    end_timer = time.time()
-    runtime = end_timer - start_timer
-    print("\n Total OCR runtime: ", runtime)
+    response = chat_session.send_message([upload_to_gemini(image, mime_type="image/png")]) # gemini prompt
 
     return response.text
 

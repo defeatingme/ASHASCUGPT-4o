@@ -1,190 +1,361 @@
-import sys
-import cv2
+# Copyright (C) 2023 The Qt Company Ltd.
+# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+from __future__ import annotations
+"""PySide6 port of the QtMultiMedia camera example from Qt v6.x"""
 import os
+import sys
+import re
 import time
-import numpy as np
-import matplotlib.pyplot as plt
-from PyQt6.QtWidgets import (
-    QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout
-)
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
-from PyQt6.QtGui import QPixmap, QImage
+from pathlib import Path
+from datetime import datetime
+import json
+from PySide6.QtMultimedia import (QCamera, QCameraDevice, QImageCapture, QMediaCaptureSession, QMediaDevices)
+from PySide6.QtWidgets import QMainWindow, QMessageBox, QPushButton
+from PySide6.QtGui import QAction, QActionGroup, QImage, QPixmap
+from PySide6.QtCore import (QDir, QTimer, Qt, Slot, Signal, QThread)
+from imagesettings import ImageSettings
+from ak_camera_ui import Ui_Camera
+from styles import buttonStyle, mboxStyle
+from ocr import GeminiOCR
+from render_latex import MathJaxSOL, ClearHTML, LoadHTML
 
-class CameraThread(QThread):
-    """Thread to capture video frames from the camera."""
-    frame_signal = pyqtSignal(QImage)
 
-    def __init__(self):
+class OCRProcessingThread(QThread):
+    ocrFinished = Signal(str, float)  # Signal to return OCR result and processing time
+
+    def __init__(self, file, start_total_timer):
         super().__init__()
-        self.running = True
-        self.cap = cv2.VideoCapture(0)
+        self.file = file
+        self.start_total_timer = start_total_timer
 
     def run(self):
-        """Continuously capture frames from the webcam."""
-        while self.running and self.cap.isOpened():
-            ret, frame = self.cap.read()
-            if ret:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                h, w, ch = frame.shape
-                bytes_per_line = ch * w
-                q_img = QImage(frame.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
-                self.frame_signal.emit(q_img)
+        try:
+            print("OCR Processing Started.")
 
-    def stop(self):
-        """Stop the camera thread and release the webcam."""
-        self.running = False
-        self.cap.release()
-        self.quit()
+            # Perform OCR
+            start_time = time.time()
+            ak_latex = GeminiOCR(self.file)
+            runtime = time.time() - start_time
 
-class AK_Camera(QWidget):
+            # Emit the result back to the main thread
+            self.ocrFinished.emit(ak_latex, runtime)
+
+        except Exception as e:
+            self.ocrFinished.emit(str(e), 0)  # Send error message
+
+
+class AK_Camera(QMainWindow):
+    finishedImageProcessing = Signal(str)
+    imageProcessed = Signal(str, str)
+        
     def __init__(self, session_window):
         super().__init__()
 
         self.session_window = session_window
-        self.image_path = None
-        self.latex_code = ""
+        self.cameraStarted = False
 
-        # Window settings
-        self.setWindowTitle("Capture Answer Key")
-        self.setGeometry(200, 100, 1080, 720)
-        self.setStyleSheet("background-color: #8c818a;")
+        self._video_devices_group = None
+        self.m_devices = QMediaDevices()
+        self.m_imageCapture = None
+        self.m_captureSession = QMediaCaptureSession()
+        self.m_camera = None
+        self.m_mediaRecorder = None
 
-        # Camera Feed (Left Side)
-        self.camera_label = QLabel(self)
-        self.camera_label.setFixedSize(600, 600)
-        self.camera_label.setStyleSheet("border: 2px solid #6A0DAD; background-color: black;")
+        self.m_isCapturingImage = False
+        self.m_applicationExiting = False
+        self.m_doImageCapture = True
 
-        # LaTeX Rendered Image (Right Side)
-        self.latex_label = QLabel("Answer Key in LaTeX", self)
-        self.latex_label.setStyleSheet("font-size: 18px; color: #6A0DAD; font-weight: bold;")
-        self.latex_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.viewfinderDone = False
+        self.imageSavedDone = False
+        self.savedFileName = None
 
-        self.latex_image_label = QLabel(self)
-        self.latex_image_label.setFixedSize(360, 480)  # Corrected Size
-        self.latex_image_label.setStyleSheet("border: 2px solid black; background-color: white;")
+        self._ui = Ui_Camera()
+        self._ui.setupUi(self)
 
-        # Buttons
-        self.btn_back = QPushButton("Back", self)
-        self.btn_back.setFixedSize(180, 48)
-        self.btn_back.setStyleSheet("background-color: #333; color: white; font-size: 14px; font-weight: bold;")
-        self.btn_back.clicked.connect(self.go_back)
+        for button in self.findChildren(QPushButton):
+            button.setStyleSheet(buttonStyle)
 
-        self.btn_capture = QPushButton("Capture", self)
-        self.btn_capture.setFixedSize(180, 48)
-        self.btn_capture.setStyleSheet("background-color: #333; color: white; font-size: 14px; font-weight: bold;")
-        self.btn_capture.clicked.connect(self.capture_image)
 
-        self.btn_retake = QPushButton("Retake", self)
-        self.btn_retake.setFixedSize(180, 48)
-        self.btn_retake.setEnabled(False)
-        self.btn_retake.setStyleSheet("background-color: #333; color: white; font-size: 14px; font-weight: bold;")
-        self.btn_retake.clicked.connect(self.retake_image)
+        self.clearhtml = ClearHTML()
+        self.loadhtml = LoadHTML()
 
-        self.btn_submit = QPushButton("Submit", self)
-        self.btn_submit.setFixedSize(240, 48)
-        self.btn_submit.setEnabled(False)
-        self.btn_submit.setStyleSheet("background-color: #333; color: white; font-size: 14px; font-weight: bold;")
-        self.btn_submit.clicked.connect(self.submit_image)
+        self._ui.web_latex.setHtml(self.clearhtml)
 
-        # Layout Setup
-        layout_main = QHBoxLayout()
-        layout_main.addWidget(self.camera_label)
+        self.image_folder = os.path.join(os.getcwd(), "images", "answerkey")
+        os.makedirs(self.image_folder, exist_ok=True)  # Ensure the folder exists
+
+        self._ui.actionAbout_Qt.triggered.connect(qApp.aboutQt)  # noqa: F821
+        self.finishedImageProcessing.connect(self.OCRProcessing)
+        self._ui.push_save.clicked.connect(self.submitImage)
+        self._ui.push_back.clicked.connect(self.backToSession)
+
+        # disable all buttons by default
+        self.updateCameraActive(False)
+        self.readyForCapture(False)
+        self._ui.push_save.setEnabled(False)
+        # try to actually initialize camera & mic
+        self.initialize()
+
+
+    ################################################################################
+    # Initializing Camera
+
+    @Slot()
+    def initialize(self):
+        # Camera devices
+        self._video_devices_group = QActionGroup(self)
+        self._video_devices_group.setExclusive(True)
+        self.updateCameras()
+        self.m_devices.videoInputsChanged.connect(self.updateCameras)
+        self._video_devices_group.triggered.connect(self.updateCameraDevice)
+        self._ui.exposureCompensation.valueChanged.connect(self.setExposureCompensation)
+
+        self.setCamera(QMediaDevices.defaultVideoInput())
+
+
+    @Slot(QCameraDevice)
+    def setCamera(self, cameraDevice):
+        self.m_camera = QCamera(cameraDevice)
+        self.m_captureSession.setCamera(self.m_camera)
+
+        self.m_camera.activeChanged.connect(self.updateCameraActive)
+        self.m_camera.errorOccurred.connect(self.displayCameraError)
+
+        if not self.m_imageCapture:
+            self.m_imageCapture = QImageCapture()
+            self.m_captureSession.setImageCapture(self.m_imageCapture)
+            self.m_imageCapture.readyForCaptureChanged.connect(self.readyForCapture)
+            self.m_imageCapture.imageCaptured.connect(self.processCapturedImage)
+            self.m_imageCapture.imageSaved.connect(self.imageSaved)
+            self.m_imageCapture.errorOccurred.connect(self.displayCaptureError)
+
+        self.m_captureSession.setVideoOutput(self._ui.viewfinder)
+
+        self.updateCameraActive(self.m_camera.isActive())
+        self.readyForCapture(self.m_imageCapture.isReadyForCapture())
+
+        self.m_camera.start()
+        self.cameraStarted = True
+
+
+
+    @Slot()
+    def displayCameraError(self):
+        if self.m_camera.error() != QCamera.NoError:
+            mboxStyle.warning(self, "Camera Error",
+                                self.m_camera.errorString())
+
+
+    @Slot(QAction)
+    def updateCameraDevice(self, action):
+        self.setCamera(QCameraDevice(action))
+
+
+    @Slot(int)
+    def setExposureCompensation(self, index):
+        self.m_camera.setExposureCompensation(index * 0.5)
+
+
+    ################################################################################
+    # Camera Settings
+
+    @Slot()
+    def configureCaptureSettings(self):
+        if self.m_doImageCapture:
+            self.configureImageSettings()
+    
+    @Slot()
+    def configureImageSettings(self):
+        settings_dialog = ImageSettings(self.m_imageCapture)
+
+        if settings_dialog.exec():
+            settings_dialog.apply_image_settings()
+
+    ################################################################################
+    # Menu Bar Functions
+
+    @Slot()
+    def startCamera(self):
+        self.m_camera.start()
+
+    @Slot()
+    def stopCamera(self):
+        self.m_camera.stop()
+
+    @Slot()
+    def updateCameras(self):
+        self._ui.menuDevices.clear()
+        available_cameras = QMediaDevices.videoInputs()
+        for cameraDevice in available_cameras:
+            video_device_action = QAction(cameraDevice.description(),
+                                          self._video_devices_group)
+            video_device_action.setCheckable(True)
+            video_device_action.setData(cameraDevice)
+            if cameraDevice == QMediaDevices.defaultVideoInput():
+                video_device_action.setChecked(True)
+
+            self._ui.menuDevices.addAction(video_device_action)
+
+    @Slot(bool)
+    def updateCameraActive(self, active):
+        if active:
+            self._ui.actionStartCamera.setEnabled(False)
+            self._ui.actionStopCamera.setEnabled(True)
+            self._ui.actionSettings.setEnabled(True)
+        else:
+            self._ui.actionStartCamera.setEnabled(True)
+            self._ui.actionStopCamera.setEnabled(False)
+            self._ui.actionSettings.setEnabled(False)
+
+
+    ################################################################################
+    # Capture Functions
+    def keyPressEvent(self, event):
+            if event.isAutoRepeat():
+                return
+            key = event.key()
+            if key == Qt.Key.Key_CameraFocus:
+                self.displayViewfinder()
+                event.accept()
+            elif key == Qt.Key.Key_Camera:
+                if self.m_doImageCapture:
+                    self.takeImage()
+                event.accept()
+            else:
+                super().keyPressEvent(event)
+
+
+    @Slot(bool)
+    def readyForCapture(self, ready):
+        self._ui.takeImageButton.setEnabled(ready)
+
+
+    @Slot()
+    def takeImage(self):
+        self._ui.takeImageButton.setEnabled(False)
+        self._ui.push_save.setEnabled(False)
+
+        self.start_total_timer = time.time()
+        self.m_isCapturingImage = True 
+
+        # Ensure directory exists before saving
+        if not os.path.exists(self.image_folder):
+            os.makedirs(self.image_folder, exist_ok=True)
+
+        # Generate dynamic file path
+        file_path = os.path.join(self.image_folder, f"{datetime.now().strftime("%Y%m%d%H%M%S")}.jpg")
+
+        # Capture image to specified path
+        self.m_imageCapture.captureToFile(QDir.toNativeSeparators(file_path)) 
+
+
+    @Slot(int, QImageCapture.Error, str)
+    def displayCaptureError(self, id, error, errorString):
+        mboxStyle.warning(self, "Image Capture Error", errorString)
+        self.m_isCapturingImage = False
+    
+    @Slot(int, QImage)
+    def processCapturedImage(self, requestId, img):
+        scaled_image = img.scaled(self._ui.viewfinder.size(),
+                                  Qt.AspectRatioMode.KeepAspectRatio,
+                                  Qt.TransformationMode.SmoothTransformation)
+
+        self._ui.lastImagePreviewLabel.setPixmap(QPixmap.fromImage(scaled_image))
+
+        # Display captured image for 1.5 seconds.
+        self.displayCapturedImage()
+        QTimer.singleShot(1000, self.displayViewfinder)
+       
+
+    @Slot()
+    def displayCapturedImage(self):
+        self._ui.stackedWidget.setCurrentIndex(1)
+
+
+    @Slot()
+    def displayViewfinder(self):
+        self._ui.stackedWidget.setCurrentIndex(0)
+
+
+
+    @Slot(int, str)
+    def imageSaved(self, id, fileName):
+        f = QDir.toNativeSeparators(fileName)
+        self._ui.statusbar.showMessage(f"Captured \"{f}\"")
+
+        self.m_isCapturingImage = False
+        if self.m_applicationExiting:
+            self.close()
+
+        self._ui.web_latex.setHtml(self.loadhtml)
+
+        self.filename = fileName
+        self.finishedImageProcessing.emit(fileName)
+        # Start background threads for processing after image is saved
+
+    ################################################################################
+    # OCR and AI Threads
+
+    def OCRProcessing(self, file):
+        self.ocr_thread = OCRProcessingThread(file, self.start_total_timer)
+        self.ocr_thread.ocrFinished.connect(self.handleOCRResult)
+        self.ocr_thread.start()
+
+    @Slot(str, float)
+    def handleOCRResult(self, ak_latex, runtime):
+        if runtime == 0:
+            self._ui.web_latex.setHtml(self.clearhtml)
+            mboxStyle.warning(self, "OCR Error", str(ak_latex))
+            self._ui.label_time.setText("Runtime: 0.00s")
+        else:
+            try:
+                print(ak_latex)
+
+                if "The image does not contain any mathematical expression" not in ak_latex:
+                    self.ak_latex = ak_latex  # Store the extracted LaTeX expression
+                    html_content = MathJaxSOL(ak_latex)
+                    self._ui.web_latex.setHtml(html_content)
+                    
+                    runtime = time.time() - self.start_total_timer
+                    self._ui.label_time.setText(f"Runtime: {runtime: .2f}s")
+
+                    self._ui.push_save.setEnabled(True)
+                else:
+                    self._ui.web_latex.setHtml(self.clearhtml)
+                    mboxStyle.warning(self, "Solution Error", "The image does not contain any mathematical expression. Please try again")
+                    self._ui.label_time.setText("Runtime: 0.00s")
+                    return  # Exit early to avoid updating time
+
+            except Exception as e:
+                mboxStyle.warning(self, "OCR Error", str(e))
+
         
-        right_layout = QVBoxLayout()
-        right_layout.addWidget(self.latex_label)
-        right_layout.addWidget(self.latex_image_label)
-        layout_main.addLayout(right_layout)
 
-        layout_buttons = QHBoxLayout()
-        layout_buttons.addWidget(self.btn_back)
-        layout_buttons.addWidget(self.btn_capture)
-        layout_buttons.addWidget(self.btn_retake)
-        layout_buttons.addWidget(self.btn_submit)
+    ################################################################################
+    # Save and Close window
 
-        layout = QVBoxLayout()
-        layout.addLayout(layout_main)
-        layout.addLayout(layout_buttons)
-        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.setLayout(layout)
+    def submitImage(self):
+        if self.ak_latex and self.filename:
+                self.imageProcessed.emit(self.filename, self.ak_latex)  # Send filename to MainWindow
+                self.stopCamera()
+                self.close()  # Close capture window
 
-        # Start Camera Thread
-        self.camera_thread = CameraThread()
-        self.camera_thread.frame_signal.connect(self.update_camera_frame)
-        self.camera_thread.start()
-
-    def update_camera_frame(self, q_img):
-        """Updates the camera display."""
-        pixmap = QPixmap.fromImage(q_img)
-        self.camera_label.setPixmap(pixmap.scaled(600, 600, Qt.AspectRatioMode.KeepAspectRatio))
-
-    def capture_image(self):
-        """Captures an image, shows loading, and displays the saved image."""
-        self.btn_capture.setEnabled(False)
-
-        # Show loading animation
-        self.camera_label.setText("📷 Saving Image...")
-        QApplication.processEvents()
-        time.sleep(1)
-
-        # Capture Image
-        ret, frame = self.camera_thread.cap.read()
-        if ret:
-            self.image_path = "images/answerkey/captured_ak.jpg"
-            os.makedirs(os.path.dirname(self.image_path), exist_ok=True)
-            cv2.imwrite(self.image_path, frame)
-
-            # Display saved image
-            pixmap = QPixmap(self.image_path)
-            self.camera_label.setPixmap(pixmap.scaled(600, 600, Qt.AspectRatioMode.KeepAspectRatio))
-
-            # Generate LaTeX Rendering
-            self.generate_latex_image()
-
-            # Enable Retake & Submit
-            self.btn_retake.setEnabled(True)
-            self.btn_submit.setEnabled(True)
-
-    def generate_latex_image(self):
-        """Generates a LaTeX rendered image using Matplotlib."""
-        latex_code = r"360 \times 480 \text{frame for rendered LaTeX}"
-        self.latex_code = latex_code
-
-        fig, ax = plt.subplots(figsize=(4, 5))  # Corrected aspect ratio
-        ax.text(0.5, 0.5, latex_code, fontsize=20, ha='center', va='center')
-        ax.set_axis_off()
-        plt.savefig("images/answerkey/latex_render.png", dpi=200, bbox_inches='tight', transparent=True)
-        plt.close()
-
-        # Display the rendered image
-        pixmap = QPixmap("images/answerkey/latex_render.png")
-        self.latex_image_label.setPixmap(pixmap.scaled(360, 480, Qt.AspectRatioMode.KeepAspectRatio))
-
-    def retake_image(self):
-        """Deletes captured image and returns to camera view."""
-        if self.image_path and os.path.exists(self.image_path):
-            os.remove(self.image_path)
-
-        self.camera_label.setText("")
-        self.latex_image_label.clear()
-        self.btn_capture.setEnabled(True)
-        self.btn_retake.setEnabled(False)
-        self.btn_submit.setEnabled(False)
-
-    def submit_image(self):
-        """Sends the image and LaTeX to SessionWindow, then closes."""
-        if self.session_window:
-            self.session_window.update_answer_key(self.image_path, self.latex_code)
-        self.camera_thread.stop()
+    def backToSession(self):
+        self.stopCamera()
         self.close()
+        self.session_window.show()
 
-    def go_back(self):
-        """Returns to previous window."""
-        self.camera_thread.stop()
-        self.close()
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = AK_Camera(None)
-    window.show()
-    sys.exit(app.exec())
+    def closeEvent(self, event):
+        if self.m_isCapturingImage:
+            self.setEnabled(False)
+            self.m_applicationExiting = True
+            event.ignore()
+        else:
+            event.accept()
+
+    
+
+
+

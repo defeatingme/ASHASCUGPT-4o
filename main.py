@@ -5,12 +5,13 @@ from __future__ import annotations
 import sys
 
 from PySide6.QtWidgets import QApplication
-
-from camera import Camera
+from database import setup_tables
+from login import Login
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = Login()
-    window.show()
+    setup_tables()
+    start_window = Login()
+    start_window.show()
     sys.exit(app.exec())
