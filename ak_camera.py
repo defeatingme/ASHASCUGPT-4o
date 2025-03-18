@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 import sys
 import re
+import cv2
+
 import time
 from pathlib import Path
 from datetime import datetime
@@ -18,7 +20,7 @@ from ak_camera_ui import Ui_Camera
 from styles import buttonStyle, mboxStyle
 from ocr import GeminiOCR
 from render_latex import MathJaxSOL, ClearHTML, LoadHTML
-
+from sizes import Characters
 
 class OCRProcessingThread(QThread):
     ocrFinished = Signal(str, float)  # Signal to return OCR result and processing time
@@ -52,7 +54,7 @@ class AK_Camera(QMainWindow):
         super().__init__()
 
         self.session_window = session_window
-        self.cameraStarted = False
+        self.cameraStarted = False #Flag for grading window
 
         self._video_devices_group = None
         self.m_devices = QMediaDevices()
@@ -88,11 +90,14 @@ class AK_Camera(QMainWindow):
         self.finishedImageProcessing.connect(self.OCRProcessing)
         self._ui.push_save.clicked.connect(self.submitImage)
         self._ui.push_back.clicked.connect(self.backToSession)
+        self._ui.push_size.clicked.connect(self.viewSizes)
 
         # disable all buttons by default
         self.updateCameraActive(False)
-        self.readyForCapture(False)
+        ###self.readyForCapture(False)
+        self._ui.takeImageButton.setEnabled(False)
         self._ui.push_save.setEnabled(False)
+        self._ui.push_size.setEnabled(False)
         # try to actually initialize camera & mic
         self.initialize()
 
@@ -124,7 +129,7 @@ class AK_Camera(QMainWindow):
         if not self.m_imageCapture:
             self.m_imageCapture = QImageCapture()
             self.m_captureSession.setImageCapture(self.m_imageCapture)
-            self.m_imageCapture.readyForCaptureChanged.connect(self.readyForCapture)
+            ###self.m_imageCapture.readyForCaptureChanged.connect(self.readyForCapture)
             self.m_imageCapture.imageCaptured.connect(self.processCapturedImage)
             self.m_imageCapture.imageSaved.connect(self.imageSaved)
             self.m_imageCapture.errorOccurred.connect(self.displayCaptureError)
@@ -132,10 +137,11 @@ class AK_Camera(QMainWindow):
         self.m_captureSession.setVideoOutput(self._ui.viewfinder)
 
         self.updateCameraActive(self.m_camera.isActive())
-        self.readyForCapture(self.m_imageCapture.isReadyForCapture())
+        ###self.readyForCapture(self.m_imageCapture.isReadyForCapture())
 
         self.m_camera.start()
-        self.cameraStarted = True
+        self.cameraStarted = True #Notify grading window
+        self._ui.takeImageButton.setEnabled(True)
 
 
 
@@ -144,6 +150,7 @@ class AK_Camera(QMainWindow):
         if self.m_camera.error() != QCamera.NoError:
             mboxStyle.warning(self, "Camera Error",
                                 self.m_camera.errorString())
+            self._ui.takeImageButton.setEnabled(False)
 
 
     @Slot(QAction)
@@ -177,10 +184,12 @@ class AK_Camera(QMainWindow):
     @Slot()
     def startCamera(self):
         self.m_camera.start()
+        self._ui.takeImageButton.setEnabled(True)
 
     @Slot()
     def stopCamera(self):
         self.m_camera.stop()
+        self._ui.takeImageButton.setEnabled(False)
 
     @Slot()
     def updateCameras(self):
@@ -224,16 +233,19 @@ class AK_Camera(QMainWindow):
             else:
                 super().keyPressEvent(event)
 
-
+    '''
     @Slot(bool)
     def readyForCapture(self, ready):
-        self._ui.takeImageButton.setEnabled(ready)
+        self._ui.takeImageButton.setEnabled(ready)'
+    '''
 
 
     @Slot()
     def takeImage(self):
         self._ui.takeImageButton.setEnabled(False)
+
         self._ui.push_save.setEnabled(False)
+        self._ui.push_size.setEnabled(False)
 
         self.start_total_timer = time.time()
         self.m_isCapturingImage = True 
@@ -253,6 +265,8 @@ class AK_Camera(QMainWindow):
     def displayCaptureError(self, id, error, errorString):
         mboxStyle.warning(self, "Image Capture Error", errorString)
         self.m_isCapturingImage = False
+        self._ui.takeImageButton.setEnabled(True)
+    
     
     @Slot(int, QImage)
     def processCapturedImage(self, requestId, img):
@@ -320,6 +334,7 @@ class AK_Camera(QMainWindow):
                     self._ui.label_time.setText(f"Runtime: {runtime: .2f}s")
 
                     self._ui.push_save.setEnabled(True)
+                    self._ui.push_size.setEnabled(True)
                 else:
                     self._ui.web_latex.setHtml(self.clearhtml)
                     mboxStyle.warning(self, "Solution Error", "The image does not contain any mathematical expression. Please try again")
@@ -328,12 +343,14 @@ class AK_Camera(QMainWindow):
 
             except Exception as e:
                 mboxStyle.warning(self, "OCR Error", str(e))
+            
+            finally:
+                self._ui.takeImageButton.setEnabled(True)
 
         
 
     ################################################################################
     # Save and Close window
-
 
     def submitImage(self):
         if self.ak_latex and self.filename:
@@ -355,7 +372,23 @@ class AK_Camera(QMainWindow):
         else:
             event.accept()
 
-    
+    def viewSizes(self):
+        if self.filename:
+            img = cv2.imread(self.filename, cv2.IMREAD_GRAYSCALE)
+            blurred = cv2.GaussianBlur(img, (5, 5), 0)  
+            _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+            contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+            valid_chars = []
+            for cnt in contours:
+                x, y, w, h = cv2.boundingRect(cnt)
+                if w < 3 or h < 3:
+                    continue
+                char_crop = thresh[y:y + h, x:x + w]
+                valid_chars.append((None, char_crop, x, y, w, h))
 
-
+            if valid_chars:
+                self.size_window = Characters(valid_chars, img)
+                self.size_window.show()
+            else:
+                print("No valid characters found!")

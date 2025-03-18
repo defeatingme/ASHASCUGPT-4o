@@ -19,8 +19,8 @@ def GeminiOCR(image):
     # commands the ai will follow
     rules = (
         "You are an expert at Optical Character Recognition (especially in handwritten characters), only generating the extracted text from the image and nothing else"
-        "Extract the full math equation and solution exactly as shown in the image, preserving all fractions in a slashed format. Do not omit any numbers or symbols."
-        "Display them in a latex code starting and ending with delimiters '$$...$$'"
+        "Extract the full step-by-step math solution exactly as shown in the image, preserving all fractions in a slashed format. Do not omit any numbers or symbols."
+        "Display them in a latex code starting and ending each line with delimiters '$$...$$'"
         "If included in the image, also extract the name of the writer of the solution, typically at the top left of the image"
         "If there is not even a single mathematical expression from the image, only state 'The image does not contain any mathematical expression.' and nothing else"
         "The results should be in plain text format."

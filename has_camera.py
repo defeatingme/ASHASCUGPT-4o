@@ -9,6 +9,7 @@ import time
 from pathlib import Path
 from datetime import datetime
 import json
+import cv2
 from PySide6.QtMultimedia import (QCamera, QCameraDevice, QImageCapture, QMediaCaptureSession, QMediaDevices)
 from PySide6.QtWidgets import QMainWindow, QMessageBox, QPushButton
 from PySide6.QtGui import QAction, QActionGroup, QImage, QPixmap
@@ -22,6 +23,8 @@ from evaluation import Evaluation
 from render_latex import MathJaxSOL, MathJaxRes, ClearHTML, LoadHTML
 from database import Session, StudentHAS
 from ak_dialog import AK_Dialog
+from sizes import Characters
+
 
 class OCRWorker(QObject):
     finished = Signal(str, float)
@@ -46,7 +49,7 @@ class OCRWorker(QObject):
 
 
 class HAS_Camera(QMainWindow):
-    finishedImageProcessing = Signal(str)
+    finishedImageProcessing = Signal()
         
     def __init__(self, session_window, id, fa_weight, ak_latex):
         super().__init__()
@@ -61,6 +64,7 @@ class HAS_Camera(QMainWindow):
         # Attribute for StudentHAS table
         self.eval = Evaluation()
         self.result = None
+        self.has_file = None
 
         self.eval.ask_asm_signal.connect(self.ASMConfirmation)
         self.eval.asm_response_signal.connect(self.eval.handleASM1)  
@@ -100,13 +104,19 @@ class HAS_Camera(QMainWindow):
 
         self._ui.actionAbout_Qt.triggered.connect(qApp.aboutQt)  # noqa: F821
         self.finishedImageProcessing.connect(self.OCRProcessing)
+
         self._ui.push_save.clicked.connect(self.saveToDatabase)
         self._ui.push_view_ak.clicked.connect(self.viewAnswerKey)
+        self._ui.push_redo.clicked.connect(self.redoChecking)
+        self._ui.push_size.clicked.connect(self.viewSizes)
         self._ui.push_back.clicked.connect(self.backToSession)
 
         # disable all buttons by default
         self.updateCameraActive(False)
-        self.readyForCapture(False)
+        ###self.readyForCapture(False)
+        self._ui.takeImageButton.setEnabled(False)
+        self._ui.push_redo.setEnabled(False)
+        self._ui.push_size.setEnabled(False)
         self._ui.push_save.setEnabled(False)
 
         self.fetchStats()
@@ -141,7 +151,7 @@ class HAS_Camera(QMainWindow):
         if not self.m_imageCapture:
             self.m_imageCapture = QImageCapture()
             self.m_captureSession.setImageCapture(self.m_imageCapture)
-            self.m_imageCapture.readyForCaptureChanged.connect(self.readyForCapture)
+            ###self.m_imageCapture.readyForCaptureChanged.connect(self.readyForCapture)
             self.m_imageCapture.imageCaptured.connect(self.processCapturedImage)
             self.m_imageCapture.imageSaved.connect(self.imageSaved)
             self.m_imageCapture.errorOccurred.connect(self.displayCaptureError)
@@ -149,9 +159,11 @@ class HAS_Camera(QMainWindow):
         self.m_captureSession.setVideoOutput(self._ui.viewfinder)
 
         self.updateCameraActive(self.m_camera.isActive())
-        self.readyForCapture(self.m_imageCapture.isReadyForCapture())
+        ###self.readyForCapture(self.m_imageCapture.isReadyForCapture())
 
         self.m_camera.start()
+        self._ui.takeImageButton.setEnabled(True)
+
 
 
     @Slot()
@@ -159,6 +171,8 @@ class HAS_Camera(QMainWindow):
         if self.m_camera.error() != QCamera.NoError:
             mboxStyle.warning(self, "Camera Error",
                                 self.m_camera.errorString())
+        self._ui.takeImageButton.setEnabled(False)
+
 
 
     @Slot(QAction)
@@ -192,10 +206,12 @@ class HAS_Camera(QMainWindow):
     @Slot()
     def startCamera(self):
         self.m_camera.start()
+        self._ui.takeImageButton.setEnabled(True)
 
     @Slot()
     def stopCamera(self):
         self.m_camera.stop()
+        self._ui.takeImageButton.setEnabled(False)
 
     @Slot()
     def updateCameras(self):
@@ -239,17 +255,20 @@ class HAS_Camera(QMainWindow):
             else:
                 super().keyPressEvent(event)
 
-
+    '''
     @Slot(bool)
     def readyForCapture(self, ready):
         self._ui.takeImageButton.setEnabled(ready)
-
+    '''
 
     @Slot()
     def takeImage(self):
-        self._ui.takeImageButton.setEnabled(False)
-
         self.start_total_timer = time.time()
+
+        self._ui.takeImageButton.setEnabled(False)
+        self._ui.push_redo.setEnabled(False)
+        self._ui.push_size.setEnabled(False)
+
         self.m_isCapturingImage = True
 
         # Ensure directory exists before saving
@@ -257,16 +276,20 @@ class HAS_Camera(QMainWindow):
             os.makedirs(self.image_folder, exist_ok=True)
 
         # Generate dynamic file path
-        file_path = os.path.join(self.image_folder, f"{datetime.now().strftime("%Y%m%d%H%M%S")}.jpg")
+        filename = os.path.join(self.image_folder, f"{datetime.now().strftime("%Y%m%d%H%M%S")}.jpg")
 
         # Capture image to specified path
-        self.m_imageCapture.captureToFile(QDir.toNativeSeparators(file_path)) 
+        self.m_imageCapture.captureToFile(QDir.toNativeSeparators(filename)) 
 
 
     @Slot(int, QImageCapture.Error, str)
     def displayCaptureError(self, id, error, errorString):
         mboxStyle.warning(self, "Image Capture Error", errorString)
         self.m_isCapturingImage = False
+        
+        self._ui.takeImageButton.setEnabled(True)
+        self._ui.push_size.setEnabled(True)
+
     
     @Slot(int, QImage)
     def processCapturedImage(self, requestId, img):
@@ -300,10 +323,9 @@ class HAS_Camera(QMainWindow):
         self.m_isCapturingImage = False
         if self.m_applicationExiting:
             self.close()
-        
-        self._ui.web_latex.setHtml(self.loadhtml)
-        self._ui.web_result.setHtml(self.loadhtml)
-        self.finishedImageProcessing.emit(fileName)
+    
+        self.filename = fileName
+        self.finishedImageProcessing.emit()
 
 
         # Start background threads for processing after image is saved
@@ -311,11 +333,14 @@ class HAS_Camera(QMainWindow):
     ################################################################################
     # OCR and AI Threads
 
-    def OCRProcessing(self, file):
+    def OCRProcessing(self):
+        self._ui.web_latex.setHtml(self.loadhtml)
+        self._ui.web_result.setHtml(self.loadhtml)
+
         print("OCR Processing Started.")
 
         self.ocr_thread = QThread()
-        self.ocr_worker = OCRWorker(file)
+        self.ocr_worker = OCRWorker(self.filename)
 
         self.ocr_worker.moveToThread(self.ocr_thread)
 
@@ -338,6 +363,7 @@ class HAS_Camera(QMainWindow):
         if "The image does not contain any mathematical expression" not in self.has_latex:
             html_content = MathJaxSOL(self.has_latex)
             self._ui.web_latex.setHtml(html_content)
+
             self.GPTEvaluation()
         else:
             self._ui.web_latex.setHtml(self.clearhtml)
@@ -356,8 +382,11 @@ class HAS_Camera(QMainWindow):
         self._ui.web_result.setHtml(self.clearhtml)
         
         mboxStyle.warning(self, "OCR Error", error_message)
+        
         self._ui.takeImageButton.setEnabled(True)
         self._ui.takeImageButton.setText("Retake capture")
+        self._ui.push_redo.setEnabled(True)
+        self._ui.push_size.setEnabled(True)
 
         self._ui.label_ocr_time.setText("OCR processing runtime:\n 0.00s")
         self._ui.label_check_time.setText("Solution checking runtime:\n 0.00s")
@@ -386,9 +415,11 @@ class HAS_Camera(QMainWindow):
             self._ui.web_result.setHtml(self.clearhtml)
             mboxStyle.warning(self, "Checking Error", str(e))
 
+            self._ui.takeImageButton.setEnabled(True)
+            self._ui.takeImageButton.setText("Retake capture")
+            self._ui.push_redo.setEnabled(True)
+            self._ui.push_size.setEnabled(True)
 
-        self._ui.takeImageButton.setEnabled(True)
-        self._ui.takeImageButton.setText("Retake capture")
 
     def ASMConfirmation(self):
         """ Executed in the main GUI thread when ASM is encountered. """
@@ -430,7 +461,21 @@ class HAS_Camera(QMainWindow):
         self._ui.label_total_time.setText(f"Total runtime from capture to\nresult display:\n{total_time: .2f}s")
         print("\n Total runtime: ", total_time)
 
+        #Enable Buttons
+        self._ui.takeImageButton.setEnabled(True)
+        self._ui.takeImageButton.setText("Retake capture")
+        self._ui.push_redo.setEnabled(True)
+        self._ui.push_size.setEnabled(True)
         self._ui.push_save.setEnabled(True)
+
+
+    def redoChecking(self):
+        self.start_total_timer = time.time()
+        self._ui.takeImageButton.setEnabled(False)
+        self._ui.push_redo.setEnabled(False)
+        self._ui.push_save.setEnabled(False)\
+        
+        self.OCRProcessing()
 
 
     ################################################################################
@@ -440,9 +485,24 @@ class HAS_Camera(QMainWindow):
         self._ui.push_save.setEnabled(False)
         has_name = self._ui.edit_student_name.text().strip() or "Anonymous"
 
+        # Validate the file path before reading the file
+        if self.filename == None:
+            if self.has_file == None:
+                mboxStyle.warning(self, "Error", "No file selected. Please upload an answer key file.");
+                return
+            else:
+                pass
+        else:
+            # Read file
+            try:
+                with open(self.filename, "rb") as file:
+                    self.has_file = file.read()
+            except FileNotFoundError:
+                mboxStyle.critical(self, "Error", "File not found. Please check the file path.")
+                return
+            
         session = Session()
         try:
-
             # Extract values safely
             result = self.result.display_full_result_or_ask_if_asm
             employed_asm = self.result.employed_asm
@@ -462,7 +522,8 @@ class HAS_Camera(QMainWindow):
                 sol_grade=sol_grade,
                 fa_grade=fa_grade,
                 overall_grade=overall_grade,
-                used_asm=employed_asm
+                used_asm=employed_asm,
+                has_file=self.has_file
             )
 
             # Add and commit the new entry
@@ -496,7 +557,6 @@ class HAS_Camera(QMainWindow):
         self.session_window.show()
 
 
-
     def closeEvent(self, event):
         if self.m_isCapturingImage:
             self.setEnabled(False)
@@ -513,6 +573,31 @@ class HAS_Camera(QMainWindow):
         dialog = AK_Dialog(self.answer_key_id, self.fa_weight, self.ak_latex)
         dialog.exec()  # Opens the dialog modally (blocks input to main window)
 
+    
+    def viewSizes(self):
+        if self.filename:
+            img = cv2.imread(self.filename, cv2.IMREAD_GRAYSCALE)
+            blurred = cv2.GaussianBlur(img, (5, 5), 0)  
+            _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+            contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            valid_chars = []
+            for cnt in contours:
+                x, y, w, h = cv2.boundingRect(cnt)
+                if w < 16 and h < 16:
+                    continue
+                char_crop = thresh[y:y + h, x:x + w]
+                valid_chars.append((None, char_crop, x, y, w, h))
+
+            if valid_chars:
+                self.size_window = Characters(valid_chars, img)
+                self.size_window.show()
+            else:
+                print("No valid characters found!")
+        else:
+            mboxStyle.warning(self, "Image Error", "No captured image file saved.")
+
+
     def fetchStats(self):
         session = Session()
         try:
@@ -526,10 +611,9 @@ class HAS_Camera(QMainWindow):
             
             self.last_checked_name = latest_student[0] if latest_student else "None"
         
-        except SQLAlchemyError as e:
-            print(f"🔴 Database Error: {e}")
+        except Exception as e:
             self.counter = 0
-            self.last_checked_name = "None"
+            self.last_checked_name = "Database error"
         
         finally:
             session.close()
