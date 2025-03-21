@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QWidget, QPushButton
 #from PySide6.QtGui import QPixmap
 #from PySide6.QtCore import Qt
 from login_ui import Ui_Login
-from styles import buttonStyle, mboxStyle
+from styles import buttonStyle2, mboxStyle
 from database import Session, Instructor
 from home import HomeWindow
 
@@ -15,7 +15,7 @@ class Login(QWidget):
         self._ui.setupUi(self)
 
         for button in self.findChildren(QPushButton):
-            button.setStyleSheet(buttonStyle)
+            button.setStyleSheet(buttonStyle2)
 
         # Connect button to function
         self._ui.push_enter.clicked.connect(self.start_application)

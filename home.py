@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QWidget, QPushButton, QTableWidgetItem, QAbstractI
 from PySide6.QtCore import Qt
 from home_ui import Ui_Home
 from database import Session, Sessions, AnswerKey, StudentHAS, database_func
-from styles import buttonStyle, tableStyle, mboxStyle
+from styles import buttonStyle, buttonStyle2, tableStyle, mboxStyle
 from grading import SessionWindow  # Import SessionWindow
 
 class HomeWindow(QWidget):
@@ -14,6 +14,9 @@ class HomeWindow(QWidget):
         self.login_window = login_window
         self.instructor_name = instructor_name
 
+        self.previous_value = ""  # Initialize previous_value to avoid AttributeError
+        self.is_editing = False   # Flag to track if we're in editing mode
+
         self._ui = Ui_Home()
         self._ui.setupUi(self)
 
@@ -22,11 +25,22 @@ class HomeWindow(QWidget):
 
         for button in self.findChildren(QPushButton):
             button.setStyleSheet(buttonStyle)
+        self._ui.push_create.setStyleSheet(buttonStyle2)
         
         self._ui.table_sessions.setStyleSheet(tableStyle)
         self._ui.table_sessions.setAlternatingRowColors(True)
-        self._ui.table_sessions.setSelectionMode(QAbstractItemView.MultiSelection)
         self._ui.table_sessions.setSelectionMode(QAbstractItemView.ExtendedSelection)  # Enables Shift & Ctrl selection
+        
+        # Disconnect any existing connections to avoid multiple triggers
+        try:
+            self._ui.table_sessions.itemChanged.disconnect()
+        except:
+            pass
+            
+        # Set up table editing behavior
+        self._ui.table_sessions.setEditTriggers(QAbstractItemView.DoubleClicked)
+        self._ui.table_sessions.itemDoubleClicked.connect(self.prepare_for_editing)
+        self._ui.table_sessions.itemChanged.connect(self.update_session_name)
 
         # List of existing sessions
         self.load_sessions()
@@ -40,30 +54,52 @@ class HomeWindow(QWidget):
 
     ################################################################################
     # INITIALIZE
-
     def load_sessions(self):
+        # Temporarily disconnect itemChanged to prevent triggering during loading
+        try:
+            self._ui.table_sessions.itemChanged.disconnect()
+        except:
+            pass
+            
         session = Session()
         try:
-            # Query for sessions related to the instructor
-            sessions = session.query(Sessions).filter(Sessions.instructor_name == self.instructor_name).all()
+            # Query for sessions related to the instructor, sorted by latest created session
+            sessions = session.query(Sessions).filter(Sessions.instructor_name == self.instructor_name) \
+                                            .order_by(Sessions.created_at.desc()).all()
 
             # Set table row & column count
             self._ui.table_sessions.setRowCount(len(sessions))
-            self._ui.table_sessions.setColumnCount(2)  # Two columns (Session ID, HAS Count)
-            self._ui.table_sessions.setHorizontalHeaderLabels(["Session ID", "Checked solutions"])  # Column headers
+            self._ui.table_sessions.setColumnCount(4)  # Four columns (Session ID, Session Name, Answer Keys, Checked solutions)
+            self._ui.table_sessions.setHorizontalHeaderLabels(["Session ID", "Session Name", "No. of Answer Keys", "Checked Solutions"])  # Column headers
 
             for row, session_record in enumerate(sessions):
-                # Get the first answer key for the session
-                first_answer_key = session.query(AnswerKey).filter(AnswerKey.session_id == session_record.session_id).order_by(AnswerKey.created_at).first()
+                # Count all answer keys associated with this session
+                answer_key_count = session.query(database_func.count(AnswerKey.id)) \
+                                        .filter(AnswerKey.session_id == session_record.session_id).scalar()
+
+                # Count total number of HAS solutions linked to any answer key within the session
+                total_has_count = session.query(database_func.count(StudentHAS.id)) \
+                                        .join(AnswerKey, StudentHAS.answer_key_id == AnswerKey.id) \
+                                        .filter(AnswerKey.session_id == session_record.session_id).scalar()
+
+                # Create table items with proper flags
+                session_id_item = QTableWidgetItem(session_record.session_id)
+                session_id_item.setFlags(session_id_item.flags() & ~Qt.ItemIsEditable)  # Make session ID non-editable
                 
-                # Get the count of HAS linked to the first answer key
-                has_count = 0
-                if first_answer_key:
-                    has_count = session.query(database_func.count(StudentHAS.id)).filter(StudentHAS.answer_key_id == first_answer_key.id).scalar()
+                session_name_item = QTableWidgetItem(session_record.session_name if session_record.session_name else "N/A")
+                session_name_item.setData(Qt.UserRole, session_record.session_id)  # Store session_id as user data
                 
+                answer_key_item = QTableWidgetItem(str(answer_key_count))
+                answer_key_item.setFlags(answer_key_item.flags() & ~Qt.ItemIsEditable)  # Make count non-editable
+                
+                has_count_item = QTableWidgetItem(str(total_has_count))
+                has_count_item.setFlags(has_count_item.flags() & ~Qt.ItemIsEditable)  # Make count non-editable
+
                 # Populate table
-                self._ui.table_sessions.setItem(row, 0, QTableWidgetItem(session_record.session_id))  # Session ID
-                self._ui.table_sessions.setItem(row, 1, QTableWidgetItem(str(has_count)))  # HAS Count (converted to string)
+                self._ui.table_sessions.setItem(row, 0, session_id_item)    # Session ID (non-editable)
+                self._ui.table_sessions.setItem(row, 1, session_name_item)  # Session Name (editable)
+                self._ui.table_sessions.setItem(row, 2, answer_key_item)    # No. of Answer Keys (non-editable)
+                self._ui.table_sessions.setItem(row, 3, has_count_item)     # Total HAS Count (non-editable)
 
             # 💡 Auto-resize settings
             self._ui.table_sessions.horizontalHeader().setStretchLastSection(True)
@@ -71,17 +107,17 @@ class HomeWindow(QWidget):
             self._ui.table_sessions.resizeRowsToContents()
             total_width = self._ui.table_sessions.viewport().width()  # Get total table width
 
-            # Set the column widths
-            self._ui.table_sessions.setColumnWidth(0, int(total_width * (2/3)))  # Session ID
-            self._ui.table_sessions.setColumnWidth(1, int(total_width * (.80/3)))  # No. of Checked
+            # Set column widths
+            self._ui.table_sessions.setColumnWidth(0, int(total_width * (1/7)))  # Session ID
+            self._ui.table_sessions.setColumnWidth(1, int(total_width * (3/7)))  # Session Name
+            self._ui.table_sessions.setColumnWidth(2, int(total_width * (1/7)))  # No. of Answer Keys
+            self._ui.table_sessions.setColumnWidth(3, int(total_width * (1/7)))  # No. of Checked
 
-            # 💡 Prevent editing & selection behavior
-            self._ui.table_sessions.setEditTriggers(QAbstractItemView.NoEditTriggers)
+            # 💡 Selection behavior
             self._ui.table_sessions.setSelectionBehavior(QAbstractItemView.SelectRows)
 
             self._ui.table_sessions.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
             self._ui.table_sessions.verticalScrollBar().setSingleStep(5)  # Default is 20
-
 
             # Fetch the latest session based on created_at
             last_session = session.query(Sessions).filter(Sessions.instructor_name == self.instructor_name) \
@@ -89,14 +125,9 @@ class HomeWindow(QWidget):
 
             # Update label with the latest session details
             if last_session:
-                self._ui.label_note.setText(f"Latest Session: {last_session.session_id} | Created At: {last_session.created_at.strftime('%Y-%m-%d %H:%M:%S')}")
+                self._ui.label_note.setText(f"*Latest Session: {last_session.session_id} ({last_session.session_name if last_session.session_name else 'N/A'}) | Created At: {last_session.created_at.strftime('%Y-%m-%d %H:%M:%S')}")
             else:
                 self._ui.label_note.setText("No sessions available.")
-
-            # #Enable editing on double-click
-            #self._ui.table_sessions.setEditTriggers(QAbstractItemView.DoubleClicked)
-            #self._ui.table_sessions.itemChanged.connect(self.update_session_id)
-            #self._ui.table_sessions.itemDoubleClicked.connect(self.enable_editing)
 
         except Exception as e:
             print(f"Database Error (Load Sessions): {e}")
@@ -104,51 +135,71 @@ class HomeWindow(QWidget):
 
         finally:
             session.close()
+            # Reconnect itemChanged after loading is complete
+            self._ui.table_sessions.itemChanged.connect(self.update_session_name)
 
-    '''
-    def enable_editing(self, item):
-        """Store previous value before editing."""
-        self.previous_value = item.text()  # Save the old session ID
+    def prepare_for_editing(self, item):
+        """
+        Called when an item is double-clicked.
+        Store the previous value and allow editing only for session name column.
+        """
+        column = item.column()
+        
+        if column == 1:  # Session Name column
+            self.is_editing = True
+            self.previous_value = item.text()
+            self._ui.table_sessions.editItem(item)
+        else:
+            # Prevent editing other columns
+            self._ui.table_sessions.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-    def update_session_id(self, item):
-        """Update session ID in the database when a user edits it."""
+
+    def update_session_name(self, item):
+        """Update session_name in the database when a user edits it."""
+        if not self.is_editing:
+            return  # Skip if not in editing mode (prevents triggers during loading)
+
+        column = item.column()
+        
+        if column != 1:  # Only process changes in the Session Name column
+            return
+            
         session = Session()
         try:
-            # Get old session ID
+            # Get row index and session ID
             row = item.row()
-            new_session_id = item.text()
-            old_session_id = self.previous_value  # Stored during double-click
-
-            if not new_session_id.strip():
-                mboxStyle.warning(self, "Invalid Input", "Session ID cannot be empty.")
-                item.setText(old_session_id)  # Revert back
-                return
+            new_session_name = item.text().strip()[:31]
             
-            # Ensure session ID is unique
-            existing_session = session.query(Sessions).filter_by(session_id=new_session_id).first()
-            if existing_session:
-                item.setText(old_session_id)  # Revert back
-                mboxStyle.warning(self, "Duplicate ID", f"{new_session_id} already exists.")
+            # Retrieve the session_id from column 0
+            session_id = self._ui.table_sessions.item(row, 0).text()
+            
+            if not new_session_name:
+                QMessageBox.warning(self, "Invalid Input", "Session Name cannot be empty.")
+                item.setText(self.previous_value)  # Revert back
                 return
 
-            # Find and update session
-            session_record = session.query(Sessions).filter_by(session_id=old_session_id).first()
+            # Find and update session by session_id
+            session_record = session.query(Sessions).filter_by(session_id=session_id).first()
+
             if session_record:
-                session_record.session_id = new_session_id
+                old_session_name = session_record.session_name if session_record.session_name else "N/A"  
+                session_record.session_name = new_session_name
                 session.commit()
-                self._ui.label_note.setText(f"Session ID updated: {old_session_id} → {new_session_id}")
+                self._ui.label_note.setText(f"Session Name updated: {old_session_name} → {new_session_name}")
             else:
-                mboxStyle.warning(self, "Not Found", "Session not found in database.")
-                item.setText(old_session_id)  # Revert back
-            
+                QMessageBox.warning(self, "Not Found", "Session not found in database.")
+                item.setText(self.previous_value)  # Revert back
+
         except Exception as e:
             session.rollback()
-            mboxStyle.critical(self, "Database Error", f"Failed to update session ID: {e}")
-            item.setText(old_session_id)  # Revert back
+            QMessageBox.critical(self, "Database Error", f"Failed to update session name: {e}")
+            item.setText(self.previous_value)  # Revert back
 
         finally:
             session.close()
-    '''
+            self.is_editing = False  # Reset editing flag
+
+
 
     def create_new(self):
         """Create a new session and switch to the SessionWindow."""

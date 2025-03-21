@@ -32,6 +32,7 @@ class Sessions(Base):
     __tablename__ = 'Sessions'
     
     session_id = Column(String(255), primary_key=True)
+    session_name = Column(String(255), nullable=False)
     instructor_name = Column(String(255), nullable=False)
     created_at = Column(TIMESTAMP, default=datetime.datetime.utcnow)
     

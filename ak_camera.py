@@ -16,8 +16,9 @@ from PySide6.QtWidgets import QMainWindow, QMessageBox, QPushButton
 from PySide6.QtGui import QAction, QActionGroup, QImage, QPixmap
 from PySide6.QtCore import (QDir, QTimer, Qt, Slot, Signal, QThread)
 from imagesettings import ImageSettings
-from ak_camera_ui import Ui_Camera
-from styles import buttonStyle, mboxStyle
+from ak_camera_ui_2 import Ui_Camera
+from styles import buttonStyle, buttonStyle2, mboxStyle
+
 from ocr import GeminiOCR
 from render_latex import MathJaxSOL, ClearHTML, LoadHTML
 from sizes import Characters
@@ -76,7 +77,8 @@ class AK_Camera(QMainWindow):
 
         for button in self.findChildren(QPushButton):
             button.setStyleSheet(buttonStyle)
-
+        self._ui.takeImageButton.setStyleSheet(buttonStyle2)
+        self._ui.push_save.setStyleSheet(buttonStyle2)
 
         self.clearhtml = ClearHTML()
         self.loadhtml = LoadHTML()
@@ -382,7 +384,7 @@ class AK_Camera(QMainWindow):
             valid_chars = []
             for cnt in contours:
                 x, y, w, h = cv2.boundingRect(cnt)
-                if w < 3 or h < 3:
+                if w < 16 or h < 16:
                     continue
                 char_crop = thresh[y:y + h, x:x + w]
                 valid_chars.append((None, char_crop, x, y, w, h))

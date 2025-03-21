@@ -2,19 +2,19 @@ from PySide6.QtWidgets import QMessageBox
 from PySide6.QtWidgets import QApplication, QMessageBox, QPushButton, QWidget, QVBoxLayout
 
 buttonStyle = """QPushButton {
-    background-color: rgb(32, 32, 32);
-    color: rgb(208, 172, 220);
-    border: 1px solid rgb(208, 172, 220);
+    color:  rgb(224, 224, 224);
+    background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0  rgba(48, 48, 48, 255), stop:1 rgba(64, 64, 64, 255));
+    border: 1px solid rgb(152, 152, 160);
+    border-bottom: 2px solid rgb(88, 88, 96);
     border-radius: 4px
     }
     QPushButton:disabled {
     background-color: rgb(48, 48, 48);
     color:  rgb(128, 128, 128);
     border: 1px solid rgb(128, 128, 128);
-    border-radius: 4px
     }
     QPushButton:hover {
-    color:  rgb(175, 192, 220);
+    color:  rgb(224, 224, 224);
     border: 1px solid rgb(175, 192, 220);
     }
     QPushButton:pressed {
@@ -25,19 +25,43 @@ buttonStyle = """QPushButton {
     }
     """
 
+buttonStyle2 = """QPushButton {
+    color:  rgb(224, 224, 224);
+    background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0  rgba(48, 48, 48, 255), stop:1 rgba(64, 64, 64, 255));
+    border: 1px solid rgb(208, 172, 220);
+    border-bottom: 2px solid rgb(121, 100, 128);
+    border-radius: 4px
+    }
+    QPushButton:disabled {
+    background-color: rgb(48, 48, 48);
+    color:  rgb(160, 160, 160);
+    border: 1px solid rgb(160, 160, 160);
+    }
+    QPushButton:hover {
+    color:  rgb(224, 224, 224);
+    border: 1px solid rgb(175, 192, 220);
+    }
+    QPushButton:pressed {
+    background-color:  rgb(208, 172, 220);
+    color: rgb(224, 224, 224);
+    border: 1px solid rgb(224, 224, 224);
+    font-weight: bold;
+    }
+    """
+
+
 tableStyle = """
     QHeaderView::section {
         background-color: rgb(48, 48, 48); /* Dark gray background */
-        color:  rgb(175, 192, 220); /* Light gray font */
+        color: rgb(224, 224, 224);
         padding: 4px;
-        font-size: 12px;
-        font-family: Arial;
-        border: 1px solid  rgb(175, 192, 220); /* Ensure border applies */
+        font-size: 14px;
+        border: 1px solid  rgb(32, 32, 32); /* Ensure border applies */
     }
 
     QTableCornerButton::section {
         background-color: rgb(48, 48, 48);
-        border: 1px solid  rgb(175, 192, 220); 
+        border: 1px solid  rgb(32, 32, 32); 
     }
 
     QTableWidget::item {
@@ -54,8 +78,7 @@ tableStyle = """
         gridline-color: rgb(32, 32, 32); /* Change gridline color */
         background-color: rgb(56, 56, 56); 
         alternate-background-color: rgb(64, 64, 64);
-        font-size: 12px;
-        font-family: Arial;
+        font-size: 14px;
         color: rgb(224, 224, 224);
         border: 1px solid  rgb(32, 32, 32);
     }
@@ -68,7 +91,7 @@ class mboxStyle(QMessageBox):
             QMessageBox {
                 background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(48, 48, 48, 255), stop:1 rgba(64, 64, 64, 255));
                 color: rgb(224, 224, 224);
-                font-size: 12px;
+                font-size: 14px;
                 border-radius: 8px;
             }
             QMessageBox QLabel {
@@ -76,17 +99,19 @@ class mboxStyle(QMessageBox):
                 color: rgb(224, 224, 224);
             }
             QMessageBox QPushButton {
-                background-color: rgb(32, 32, 32);
-                color: rgb(208, 172, 220);
+                color: rgb(224, 224, 224);
+                background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(40, 40, 40, 255), stop:1 rgba(56, 56, 56, 255));
                 border: 1px solid rgb(208, 172, 220);
+                border-bottom: 2px solid rgb(121, 100, 128);
                 border-radius: 4px;
                 min-width: 81px;  /* Adjust button width */
-                min-height: 21px;  /* Adjust button height */
+                min-height: 25px;  /* Adjust button height */
+
             }
             QMessageBox QPushButton:disabled {
-                background-color: rgb(64, 64, 64);
-                color: rgb(128, 128, 128);
-                border: 1px solid rgb(128, 128, 128);
+                background-color: rgb(48, 48, 48);
+                color: rgb(160, 160, 160);
+                border: 1px solid rgb(160, 160, 160);
             }
             QMessageBox QPushButton:hover {
                 color: rgb(175, 192, 220);

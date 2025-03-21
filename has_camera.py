@@ -15,8 +15,8 @@ from PySide6.QtWidgets import QMainWindow, QMessageBox, QPushButton
 from PySide6.QtGui import QAction, QActionGroup, QImage, QPixmap
 from PySide6.QtCore import (QDir, QTimer, Qt, Slot, Signal, QObject, QThread)
 from imagesettings import ImageSettings
-from has_camera_ui import Ui_Camera
-from styles import buttonStyle, mboxStyle
+from has_camera_ui_2 import Ui_Camera
+from styles import buttonStyle, buttonStyle2, mboxStyle
 
 from ocr import GeminiOCR
 from evaluation import Evaluation
@@ -90,6 +90,9 @@ class HAS_Camera(QMainWindow):
 
         for button in self.findChildren(QPushButton):
             button.setStyleSheet(buttonStyle)
+        self._ui.takeImageButton.setStyleSheet(buttonStyle2)
+        self._ui.push_save.setStyleSheet(buttonStyle2)
+        
 
         self.clearhtml = ClearHTML()
         self.loadhtml = LoadHTML()

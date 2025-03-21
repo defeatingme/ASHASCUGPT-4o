@@ -16,7 +16,7 @@ def MathJaxSOL(latex_raw):
             body {{
                 background-color: rgb(64, 64, 64); /* Dark background */
                 color: rgb(224, 224, 224); /* Light gray text */
-                font-size: 14px; /* Adjusted for better visibility in 320x300 px */
+                font-size: 16px; /* Adjusted for better visibility in 320x300 px */
                 padding: 5px;
                 font-family: Arial, sans-serif;
                 overflow: auto; /* Enable scrolling if needed */
@@ -25,8 +25,7 @@ def MathJaxSOL(latex_raw):
             .math-container {{
                 text-align: left;
                 white-space: pre-wrap; /* Preserve new lines */
-                font-size: 14px; /* Ensuring 7-8 layers fit */
-                line-height: .1; /* Reduce line spacing */
+                font-size: 16px; /* Ensuring 7-8 layers fit */
 
             }}
         </style>
@@ -51,7 +50,7 @@ def MathJaxRes(latex_raw):
             body {{
                 background-color: rgb(64, 64, 64); /* Dark background */
                 color: rgb(224, 224, 224); /* Light gray text */
-                font-size: 14px; /* Adjusted for better visibility in 320x300 px */
+                font-size: 16px; /* Adjusted for better visibility in 320x300 px */
                 padding: 2px;
                 font-family: Arial, sans-serif;
                 overflow: auto; /* Enable scrolling if needed */
@@ -60,7 +59,7 @@ def MathJaxRes(latex_raw):
             .math-container {{
                 text-align: left;
                 white-space: pre-wrap; /* Preserve new lines */
-                font-size: 14px; /* Ensuring 7-8 layers fit */
+                font-size: 16px; /* Ensuring 7-8 layers fit */
                 line-height: 1.5; /* Reduce line spacing */
 
             }}
@@ -178,7 +177,10 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     image = r"images\has\has1.png"
     #latex_raw = GeminiOCR(image)
-    latex_raw = r'''\[x^2 - 5x + 6 = 0\]\[x = \frac{-(-5) \pm \sqrt{(-5)^2 - 4(1)(6)}}{2(1)}\]\[x = \frac{5 \pm \sqrt{25 - 24}}{2}\]\[x = \frac{5 \pm 1}{2}\]\[x = \frac{6}{2} \quad \text{or} \quad x = \frac{4}{2}\]\[x = 3 \quad \text{or} \quad x = 2\]
+    latex_raw = r'''Solve quadratic equation:\n
+2x^2 - 4x - 6 = 0 \begin{align*} 2x^2 - 4x - 6 = 0 \\ \text{divide by 2:} x^2 - 2x - 3 = 0 \\ (x - 3)(x + 1) = 0 \\ x - 3 = 0 \quad \text{or} \quad x + 1 = 0 \\ x = 3 \quad \text{or} \quad x = -1 \end{align*}
+
+
     '''
     print(latex_raw)
     window = MathJaxApp(latex_raw)

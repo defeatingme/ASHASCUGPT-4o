@@ -5,8 +5,8 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, Signal, QThread, QObject
 from PySide6.QtGui import QPixmap, QIntValidator, QImage
-from grading_ui import Ui_Session
-from styles import buttonStyle, mboxStyle, tableStyle
+from grading_ui_2 import Ui_Session
+from styles import buttonStyle, buttonStyle2, mboxStyle, tableStyle
 
 from database import Session, AnswerKey, StudentHAS
 from ak_camera import AK_Camera
@@ -61,6 +61,8 @@ class SessionWindow(QWidget):
 
         for button in self.findChildren(QPushButton):
             button.setStyleSheet(buttonStyle)
+        self._ui.push_save.setStyleSheet(buttonStyle2)
+        self._ui.push_start.setStyleSheet(buttonStyle2)
 
         self._ui.table_checked.setStyleSheet(tableStyle)
         self._ui.table_checked.setAlternatingRowColors(True)
