@@ -24,7 +24,7 @@ class Ui_Session(object):
     def setupUi(self, Session):
         if not Session.objectName():
             Session.setObjectName(u"Session")
-        Session.resize(1140, 760)
+        Session.resize(1140, 840)
         Session.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(48, 48, 48, 255), stop:1 rgba(64, 64, 64, 255))")
         self.label_session = QLabel(Session)
         self.label_session.setObjectName(u"label_session")
@@ -57,7 +57,7 @@ class Ui_Session(object):
         self.label_instructor.setOpenExternalLinks(True)
         self.label_ak = QLabel(Session)
         self.label_ak.setObjectName(u"label_ak")
-        self.label_ak.setGeometry(QRect(0, 90, 281, 31))
+        self.label_ak.setGeometry(QRect(0, 80, 281, 31))
         font2 = QFont()
         font2.setFamilies([u"Segoe UI"])
         font2.setPointSize(12)
@@ -71,7 +71,7 @@ class Ui_Session(object):
         self.label_ak.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_image = QLabel(Session)
         self.label_image.setObjectName(u"label_image")
-        self.label_image.setGeometry(QRect(280, 60, 360, 271))
+        self.label_image.setGeometry(QRect(280, 60, 360, 301))
         font3 = QFont()
         font3.setFamilies([u"Segoe UI"])
         font3.setPointSize(11)
@@ -83,7 +83,7 @@ class Ui_Session(object):
         self.label_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.push_start = QPushButton(Session)
         self.push_start.setObjectName(u"push_start")
-        self.push_start.setGeometry(QRect(760, 700, 361, 25))
+        self.push_start.setGeometry(QRect(280, 780, 361, 31))
         font4 = QFont()
         font4.setFamilies([u"Segoe UI"])
         font4.setPointSize(11)
@@ -105,7 +105,7 @@ class Ui_Session(object):
         self.push_start.setCheckable(False)
         self.push_back = QPushButton(Session)
         self.push_back.setObjectName(u"push_back")
-        self.push_back.setGeometry(QRect(10, 720, 121, 25))
+        self.push_back.setGeometry(QRect(10, 800, 121, 25))
         self.push_back.setFont(font3)
         self.push_back.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
@@ -123,7 +123,7 @@ class Ui_Session(object):
         self.push_back.setCheckable(False)
         self.frame_latex = QFrame(Session)
         self.frame_latex.setObjectName(u"frame_latex")
-        self.frame_latex.setGeometry(QRect(280, 340, 361, 391))
+        self.frame_latex.setGeometry(QRect(280, 370, 361, 391))
         self.frame_latex.setFont(font3)
         self.frame_latex.setStyleSheet(u"border: 1px solid rgb(208, 172, 220);\n"
 "background-color: rgb(64, 64, 64);\n"
@@ -168,7 +168,7 @@ class Ui_Session(object):
         self.label_name.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
         self.frame_checked = QFrame(Session)
         self.frame_checked.setObjectName(u"frame_checked")
-        self.frame_checked.setGeometry(QRect(679, 60, 451, 621))
+        self.frame_checked.setGeometry(QRect(679, 60, 451, 771))
         self.frame_checked.setFont(font3)
         self.frame_checked.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(40, 40, 40, 255), stop:1 rgba(56, 56, 56, 255));\n"
 "border: 1px solid rgb(175, 192, 220);\n"
@@ -185,7 +185,7 @@ class Ui_Session(object):
         self.label_checked.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.label_table_note = QLabel(self.frame_checked)
         self.label_table_note.setObjectName(u"label_table_note")
-        self.label_table_note.setGeometry(QRect(10, 510, 441, 21))
+        self.label_table_note.setGeometry(QRect(10, 630, 441, 21))
         font7 = QFont()
         font7.setFamilies([u"Segoe UI"])
         font7.setPointSize(10)
@@ -199,21 +199,21 @@ class Ui_Session(object):
         self.label_table_note.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.table_checked = QTableWidget(self.frame_checked)
         self.table_checked.setObjectName(u"table_checked")
-        self.table_checked.setGeometry(QRect(0, 30, 451, 480))
+        self.table_checked.setGeometry(QRect(0, 30, 451, 601))
         self.table_checked.setFont(font3)
         self.table_checked.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(64, 64, 64, 255), stop:1 rgba(48, 48, 48, 255));\n"
 "border: 1px solid rgb(208, 172, 220);\n"
 "border-radius: 4px")
         self.frame_buttons = QFrame(self.frame_checked)
         self.frame_buttons.setObjectName(u"frame_buttons")
-        self.frame_buttons.setGeometry(QRect(0, 530, 451, 91))
+        self.frame_buttons.setGeometry(QRect(0, 650, 451, 121))
         self.frame_buttons.setFont(font3)
         self.frame_buttons.setStyleSheet(u"background-color: rgb(48, 48, 48)")
         self.frame_buttons.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_buttons.setFrameShadow(QFrame.Shadow.Raised)
         self.push_list = QPushButton(self.frame_buttons)
         self.push_list.setObjectName(u"push_list")
-        self.push_list.setGeometry(QRect(10, 50, 241, 25))
+        self.push_list.setGeometry(QRect(10, 80, 431, 25))
         self.push_list.setFont(font3)
         self.push_list.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
@@ -231,7 +231,7 @@ class Ui_Session(object):
         self.push_list.setCheckable(False)
         self.push_export = QPushButton(self.frame_buttons)
         self.push_export.setObjectName(u"push_export")
-        self.push_export.setGeometry(QRect(260, 50, 181, 25))
+        self.push_export.setGeometry(QRect(230, 10, 211, 25))
         self.push_export.setFont(font3)
         self.push_export.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
@@ -249,7 +249,7 @@ class Ui_Session(object):
         self.push_export.setCheckable(False)
         self.push_delete = QPushButton(self.frame_buttons)
         self.push_delete.setObjectName(u"push_delete")
-        self.push_delete.setGeometry(QRect(10, 10, 121, 25))
+        self.push_delete.setGeometry(QRect(10, 40, 211, 25))
         self.push_delete.setFont(font3)
         self.push_delete.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
@@ -267,7 +267,7 @@ class Ui_Session(object):
         self.push_delete.setCheckable(False)
         self.push_reload = QPushButton(self.frame_buttons)
         self.push_reload.setObjectName(u"push_reload")
-        self.push_reload.setGeometry(QRect(150, 10, 151, 25))
+        self.push_reload.setGeometry(QRect(10, 10, 211, 25))
         self.push_reload.setFont(font3)
         self.push_reload.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
@@ -285,7 +285,7 @@ class Ui_Session(object):
         self.push_reload.setCheckable(False)
         self.push_recheck = QPushButton(self.frame_buttons)
         self.push_recheck.setObjectName(u"push_recheck")
-        self.push_recheck.setGeometry(QRect(320, 10, 121, 25))
+        self.push_recheck.setGeometry(QRect(230, 40, 211, 25))
         self.push_recheck.setFont(font3)
         self.push_recheck.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
@@ -303,7 +303,7 @@ class Ui_Session(object):
         self.push_recheck.setCheckable(False)
         self.frame_ak_data = QFrame(Session)
         self.frame_ak_data.setObjectName(u"frame_ak_data")
-        self.frame_ak_data.setGeometry(QRect(10, 130, 261, 561))
+        self.frame_ak_data.setGeometry(QRect(10, 120, 261, 641))
         self.frame_ak_data.setFont(font3)
         self.frame_ak_data.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(40, 40, 40, 255), stop:1 rgba(56, 56, 56, 255));\n"
 "border: 1px solid rgb(175, 192, 220);\n"
@@ -312,7 +312,7 @@ class Ui_Session(object):
         self.frame_ak_data.setFrameShadow(QFrame.Shadow.Raised)
         self.edit_fa_weight = QLineEdit(self.frame_ak_data)
         self.edit_fa_weight.setObjectName(u"edit_fa_weight")
-        self.edit_fa_weight.setGeometry(QRect(10, 230, 241, 25))
+        self.edit_fa_weight.setGeometry(QRect(40, 340, 181, 25))
         self.edit_fa_weight.setFont(font3)
         self.edit_fa_weight.setStyleSheet(u"padding: 2px; \n"
 "border-radius: 2px; \n"
@@ -320,25 +320,17 @@ class Ui_Session(object):
 "background-color: rgb(32, 32, 32);\n"
 "color: #eee")
         self.edit_fa_weight.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.label_fa_weight = QLabel(self.frame_ak_data)
-        self.label_fa_weight.setObjectName(u"label_fa_weight")
-        self.label_fa_weight.setGeometry(QRect(0, 170, 261, 31))
-        self.label_fa_weight.setFont(font5)
-        self.label_fa_weight.setStyleSheet(u"background-color: rgb(48, 48, 48);\n"
+        self.label_grading = QLabel(self.frame_ak_data)
+        self.label_grading.setObjectName(u"label_grading")
+        self.label_grading.setGeometry(QRect(0, 150, 261, 31))
+        self.label_grading.setFont(font5)
+        self.label_grading.setStyleSheet(u"background-color: rgb(48, 48, 48);\n"
 "color: rgb(224, 224, 224);\n"
 "")
-        self.label_fa_weight.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
-        self.label_fa_note = QLabel(self.frame_ak_data)
-        self.label_fa_note.setObjectName(u"label_fa_note")
-        self.label_fa_note.setGeometry(QRect(20, 250, 231, 41))
-        self.label_fa_note.setFont(font7)
-        self.label_fa_note.setStyleSheet(u"background-color: None;\n"
-"color: rgb(224, 224, 224);\n"
-"border: None")
-        self.label_fa_note.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+        self.label_grading.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.push_computer = QPushButton(self.frame_ak_data)
         self.push_computer.setObjectName(u"push_computer")
-        self.push_computer.setGeometry(QRect(10, 80, 240, 25))
+        self.push_computer.setGeometry(QRect(10, 70, 240, 25))
         self.push_computer.setFont(font3)
         self.push_computer.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
@@ -380,27 +372,9 @@ class Ui_Session(object):
 "color: rgb(224, 224, 224);\n"
 "")
         self.label_submit.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
-        self.push_save = QPushButton(self.frame_ak_data)
-        self.push_save.setObjectName(u"push_save")
-        self.push_save.setGeometry(QRect(10, 420, 241, 25))
-        self.push_save.setFont(font4)
-        self.push_save.setStyleSheet(u"QPushButton {\n"
-"    color:  rgb(224, 224, 224);\n"
-"    background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(40, 40, 40, 255), stop:1 rgba(56, 56, 56, 255));\n"
-"    border: 1px solid rgb(208, 172, 220);\n"
-"    border-bottom: 2px solid rgb(121, 100, 128);\n"
-"    border-radius: 4px\n"
-"    }\n"
-"    QPushButton:disabled {\n"
-"    background-color: rgb(48, 48, 48);\n"
-"    color:  rgb(160, 160, 160);\n"
-"    border: 1px solid rgb(192, 192, 192);\n"
-"    border-radius: 4px\n"
-"    }")
-        self.push_save.setCheckable(False)
         self.label_settings = QLabel(self.frame_ak_data)
         self.label_settings.setObjectName(u"label_settings")
-        self.label_settings.setGeometry(QRect(0, 300, 261, 31))
+        self.label_settings.setGeometry(QRect(0, 390, 261, 31))
         self.label_settings.setFont(font5)
         self.label_settings.setStyleSheet(u"background-color: rgb(48, 48, 48);\n"
 "color: rgb(224, 224, 224);\n"
@@ -408,7 +382,7 @@ class Ui_Session(object):
         self.label_settings.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.push_reset = QPushButton(self.frame_ak_data)
         self.push_reset.setObjectName(u"push_reset")
-        self.push_reset.setGeometry(QRect(10, 510, 241, 25))
+        self.push_reset.setGeometry(QRect(10, 600, 241, 25))
         self.push_reset.setFont(font3)
         self.push_reset.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
@@ -426,7 +400,7 @@ class Ui_Session(object):
         self.push_reset.setCheckable(False)
         self.push_redo = QPushButton(self.frame_ak_data)
         self.push_redo.setObjectName(u"push_redo")
-        self.push_redo.setGeometry(QRect(10, 130, 240, 25))
+        self.push_redo.setGeometry(QRect(10, 110, 240, 25))
         self.push_redo.setFont(font3)
         self.push_redo.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
@@ -444,25 +418,25 @@ class Ui_Session(object):
         self.push_redo.setCheckable(False)
         self.label_save_note = QLabel(self.frame_ak_data)
         self.label_save_note.setObjectName(u"label_save_note")
-        self.label_save_note.setGeometry(QRect(10, 330, 251, 21))
+        self.label_save_note.setGeometry(QRect(10, 420, 251, 21))
         self.label_save_note.setFont(font7)
         self.label_save_note.setStyleSheet(u"color: rgb(224, 224, 224);\n"
 "background-color: None;\n"
 "border: None")
         self.label_save_note.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
-        self.label_fa_note_2 = QLabel(self.frame_ak_data)
-        self.label_fa_note_2.setObjectName(u"label_fa_note_2")
-        self.label_fa_note_2.setGeometry(QRect(10, 200, 251, 21))
-        self.label_fa_note_2.setFont(font7)
-        self.label_fa_note_2.setStyleSheet(u"color: rgb(224, 224, 224);\n"
+        self.label_fa_default = QLabel(self.frame_ak_data)
+        self.label_fa_default.setObjectName(u"label_fa_default")
+        self.label_fa_default.setGeometry(QRect(10, 310, 251, 21))
+        self.label_fa_default.setFont(font7)
+        self.label_fa_default.setStyleSheet(u"color: rgb(224, 224, 224);\n"
 "background-color: None;\n"
 "border: None")
-        self.label_fa_note_2.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
-        self.push_save_2 = QPushButton(self.frame_ak_data)
-        self.push_save_2.setObjectName(u"push_save_2")
-        self.push_save_2.setGeometry(QRect(10, 360, 241, 31))
-        self.push_save_2.setFont(font4)
-        self.push_save_2.setStyleSheet(u"QPushButton {\n"
+        self.label_fa_default.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+        self.push_view_ak = QPushButton(self.frame_ak_data)
+        self.push_view_ak.setObjectName(u"push_view_ak")
+        self.push_view_ak.setGeometry(QRect(10, 490, 241, 25))
+        self.push_view_ak.setFont(font4)
+        self.push_view_ak.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
 "    background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(40, 40, 40, 255), stop:1 rgba(56, 56, 56, 255));\n"
 "    border: 1px solid rgb(208, 172, 220);\n"
@@ -475,12 +449,66 @@ class Ui_Session(object):
 "    border: 1px solid rgb(192, 192, 192);\n"
 "    border-radius: 4px\n"
 "    }")
-        self.push_save_2.setCheckable(False)
-        self.push_save_3 = QPushButton(self.frame_ak_data)
-        self.push_save_3.setObjectName(u"push_save_3")
-        self.push_save_3.setGeometry(QRect(10, 460, 241, 25))
-        self.push_save_3.setFont(font4)
-        self.push_save_3.setStyleSheet(u"QPushButton {\n"
+        self.push_view_ak.setCheckable(False)
+        self.label_fa_weight = QLabel(self.frame_ak_data)
+        self.label_fa_weight.setObjectName(u"label_fa_weight")
+        self.label_fa_weight.setGeometry(QRect(0, 280, 261, 31))
+        self.label_fa_weight.setFont(font5)
+        self.label_fa_weight.setStyleSheet(u"color: rgb(224, 224, 224);\n"
+"background-color: None;\n"
+"border: None;\n"
+"border-top: 1px solid rgb(175, 192, 220);\n"
+"")
+        self.label_fa_weight.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+        self.edit_sol_layers = QLineEdit(self.frame_ak_data)
+        self.edit_sol_layers.setObjectName(u"edit_sol_layers")
+        self.edit_sol_layers.setGeometry(QRect(40, 240, 181, 25))
+        self.edit_sol_layers.setFont(font3)
+        self.edit_sol_layers.setStyleSheet(u"padding: 2px; \n"
+"border-radius: 2px; \n"
+"border: 1px solid rgb(208, 172, 220);\n"
+"background-color: rgb(32, 32, 32);\n"
+"color: #eee")
+        self.edit_sol_layers.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.label_sol_autofill = QLabel(self.frame_ak_data)
+        self.label_sol_autofill.setObjectName(u"label_sol_autofill")
+        self.label_sol_autofill.setGeometry(QRect(10, 210, 251, 21))
+        self.label_sol_autofill.setFont(font7)
+        self.label_sol_autofill.setStyleSheet(u"color: rgb(224, 224, 224);\n"
+"background-color: None;\n"
+"border: None")
+        self.label_sol_autofill.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+        self.label_sol_note = QLabel(self.frame_ak_data)
+        self.label_sol_note.setObjectName(u"label_sol_note")
+        self.label_sol_note.setGeometry(QRect(10, 180, 251, 31))
+        self.label_sol_note.setFont(font5)
+        self.label_sol_note.setStyleSheet(u"color: rgb(224, 224, 224);\n"
+"background-color: None;\n"
+"border: None")
+        self.label_sol_note.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+        self.push_save = QPushButton(self.frame_ak_data)
+        self.push_save.setObjectName(u"push_save")
+        self.push_save.setGeometry(QRect(10, 450, 241, 31))
+        self.push_save.setFont(font4)
+        self.push_save.setStyleSheet(u"QPushButton {\n"
+"    color:  rgb(255, 255, 255);\n"
+"    background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(40, 40, 40, 255), stop:1 rgba(56, 56, 56, 255));\n"
+"    border: 1px solid rgb(208, 172, 220);\n"
+"    border-bottom: 2px solid rgb(121, 100, 128);\n"
+"    border-radius: 4px\n"
+"    }\n"
+"    QPushButton:disabled {\n"
+"    background-color: rgb(48, 48, 48);\n"
+"    color:  rgb(160, 160, 160);\n"
+"    border: 1px solid rgb(192, 192, 192);\n"
+"    border-radius: 4px\n"
+"    }")
+        self.push_save.setCheckable(False)
+        self.push_add = QPushButton(self.frame_ak_data)
+        self.push_add.setObjectName(u"push_add")
+        self.push_add.setGeometry(QRect(10, 530, 241, 31))
+        self.push_add.setFont(font4)
+        self.push_add.setStyleSheet(u"QPushButton {\n"
 "    color:  rgb(224, 224, 224);\n"
 "    background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(40, 40, 40, 255), stop:1 rgba(56, 56, 56, 255));\n"
 "    border: 1px solid rgb(208, 172, 220);\n"
@@ -493,18 +521,18 @@ class Ui_Session(object):
 "    border: 1px solid rgb(192, 192, 192);\n"
 "    border-radius: 4px\n"
 "    }")
-        self.push_save_3.setCheckable(False)
-        self.label_save_note_2 = QLabel(self.frame_ak_data)
-        self.label_save_note_2.setObjectName(u"label_save_note_2")
-        self.label_save_note_2.setGeometry(QRect(10, 390, 241, 21))
-        self.label_save_note_2.setFont(font7)
-        self.label_save_note_2.setStyleSheet(u"color: rgb(224, 224, 224);\n"
+        self.push_add.setCheckable(False)
+        self.label_ak_count = QLabel(self.frame_ak_data)
+        self.label_ak_count.setObjectName(u"label_ak_count")
+        self.label_ak_count.setGeometry(QRect(10, 560, 241, 21))
+        self.label_ak_count.setFont(font7)
+        self.label_ak_count.setStyleSheet(u"color: rgb(224, 224, 224);\n"
 "background-color: None;\n"
 "border: None")
-        self.label_save_note_2.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+        self.label_ak_count.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.frame = QFrame(Session)
         self.frame.setObjectName(u"frame")
-        self.frame.setGeometry(QRect(650, 60, 21, 691))
+        self.frame.setGeometry(QRect(650, 60, 21, 771))
         self.frame.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(48, 48, 48, 255), stop:1 rgba(64, 64, 64, 255));\n"
 "border: 2px solid qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(40, 40, 40, 255), stop:1 rgba(56, 56, 56, 255));\n"
 "border-radius: 2px")
@@ -522,7 +550,7 @@ class Ui_Session(object):
         self.label_instructor.setText(QCoreApplication.translate("Session", u"by: Anonymous", None))
         self.label_ak.setText(QCoreApplication.translate("Session", u"Answer key (AK)", None))
         self.label_image.setText(QCoreApplication.translate("Session", u"Source file preview\n"
-"360x270", None))
+"360x300", None))
         self.push_start.setText(QCoreApplication.translate("Session", u"Start checking solutions", None))
         self.push_back.setText(QCoreApplication.translate("Session", u"Back", None))
         self.label_latex.setText(QCoreApplication.translate("Session", u"AK in LaTeX: ", None))
@@ -530,26 +558,29 @@ class Ui_Session(object):
         self.label_checked.setText(QCoreApplication.translate("Session", u"List of checked solutions: ", None))
         self.label_table_note.setText(QCoreApplication.translate("Session", u"*No recorded solutions", None))
         self.push_list.setText(QCoreApplication.translate("Session", u"View full table", None))
-        self.push_export.setText(QCoreApplication.translate("Session", u"Export", None))
-        self.push_delete.setText(QCoreApplication.translate("Session", u"Delete", None))
-        self.push_reload.setText(QCoreApplication.translate("Session", u"Reload", None))
-        self.push_recheck.setText(QCoreApplication.translate("Session", u"Recheck", None))
+        self.push_export.setText(QCoreApplication.translate("Session", u"Export table as...", None))
+        self.push_delete.setText(QCoreApplication.translate("Session", u"Delete solution", None))
+        self.push_reload.setText(QCoreApplication.translate("Session", u"Reload table", None))
+        self.push_recheck.setText(QCoreApplication.translate("Session", u"Recheck solution", None))
         self.edit_fa_weight.setText("")
         self.edit_fa_weight.setPlaceholderText(QCoreApplication.translate("Session", u"20", None))
-        self.label_fa_weight.setText(QCoreApplication.translate("Session", u"Input final answer weight (%): ", None))
-        self.label_fa_note.setText(QCoreApplication.translate("Session", u"*Final answer percetage against\n"
-"step-by-step solution", None))
+        self.label_grading.setText(QCoreApplication.translate("Session", u"Grading mechanics:", None))
         self.push_computer.setText(QCoreApplication.translate("Session", u"From computer", None))
         self.push_camera.setText(QCoreApplication.translate("Session", u"Open camera", None))
         self.label_submit.setText(QCoreApplication.translate("Session", u"Submit file: ", None))
-        self.push_save.setText(QCoreApplication.translate("Session", u"Save data", None))
         self.label_settings.setText(QCoreApplication.translate("Session", u"Settings:", None))
         self.push_reset.setText(QCoreApplication.translate("Session", u"Reset all", None))
         self.push_redo.setText(QCoreApplication.translate("Session", u"Redo OCR", None))
         self.label_save_note.setText(QCoreApplication.translate("Session", u"*No data is saved", None))
-        self.label_fa_note_2.setText(QCoreApplication.translate("Session", u"*Default: 20", None))
-        self.push_save_2.setText(QCoreApplication.translate("Session", u"Add AK for another problem", None))
-        self.push_save_3.setText(QCoreApplication.translate("Session", u"View saved", None))
-        self.label_save_note_2.setText(QCoreApplication.translate("Session", u"*No. of AKs saved: 0/2", None))
+        self.label_fa_default.setText(QCoreApplication.translate("Session", u"*Default: 20", None))
+        self.push_view_ak.setText(QCoreApplication.translate("Session", u"View saved", None))
+        self.label_fa_weight.setText(QCoreApplication.translate("Session", u" Input final answer weight (%): ", None))
+        self.edit_sol_layers.setText("")
+        self.edit_sol_layers.setPlaceholderText(QCoreApplication.translate("Session", u"0 - 10 [Autofill]", None))
+        self.label_sol_autofill.setText(QCoreApplication.translate("Session", u"*Does not include the problem setup", None))
+        self.label_sol_note.setText(QCoreApplication.translate("Session", u"Input no. of layers in the solution: ", None))
+        self.push_save.setText(QCoreApplication.translate("Session", u"Save data", None))
+        self.push_add.setText(QCoreApplication.translate("Session", u"Add AK for another problem", None))
+        self.label_ak_count.setText(QCoreApplication.translate("Session", u"*No. of AKs saved: 0/2", None))
     # retranslateUi
 

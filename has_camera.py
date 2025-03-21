@@ -374,8 +374,10 @@ class HAS_Camera(QMainWindow):
             mboxStyle.warning(self, "Solution Error", "The image does not contain any mathematical expression. Please try again")
             self._ui.label_check_time.setText("Solution checking runtime:\n 0.00s")
             self._ui.label_total_time.setText("Total runtime from capture to\nresult display:\n 0.00s")
-            
 
+            self._ui.takeImageButton.setEnabled(True)
+            self._ui.takeImageButton.setText("Retake capture")
+            self._ui.push_redo.setEnabled(True)
 
         self._ui.label_ocr_time.setText(f"OCR processing runtime:\n{ocr_time: .2f}s")
 

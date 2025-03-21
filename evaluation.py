@@ -29,7 +29,7 @@ class Evaluation(QObject):  # Now inherits QObject for PySide6 compatibility
                 """Grade Handwritten Algebraic Solution (HAS) step-by-step based strictly on the Answer Key (AK).
                 Grade = Solution (SOL) % + Final Answer (FA) %. FA is the last and not a SOL step. Deduct SOL points for each missing or wrong step; accept redundancy and partial simplifications. Ignore the first line(s) in the HAS if it is also first in the AK, as it is the algebraic problem setup. Use formula: (C/T)W for SOL grading, where C = correct SOL steps from HAS aligned with AK counterpart, T = total SOL steps from AK, and W = SOL weight.
                 If the HAS employs an Alternative Solution Method (ASM) different from the AK, state: 'The solution has an Alternative Method used... Do you want to allow it? (Yes/No)' and wait for user confirmation before grading. If allowed: alter T in SOL formula to total steps in the HAS instead of the AK, and C to simply correct steps. Refrain from asking again for subsequent HAS with similar ASM, or if the user forbids ASMs.
-                If the HAS has no SOL, state: 'There is no solution provided to justify the answer'.
+                If the HAS has no SOL or heavily deviates with the requirements of the problem, failing to contribute to the solution, state: 'There is no solution provided to justify the answer'.
                 For the result, briefly state the Problem from the AK, and if a step is Correct or not. Display Grade as: 'Solution = (substituted formula) = #%,\nFinal Answer = #%,\nGrade = #%'.
                 """)
             }

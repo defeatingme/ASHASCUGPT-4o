@@ -26,7 +26,7 @@ buttonStyle = """QPushButton {
     """
 
 buttonStyle2 = """QPushButton {
-    color:  rgb(224, 224, 224);
+    color:  rgb(255, 255, 255);
     background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0  rgba(48, 48, 48, 255), stop:1 rgba(64, 64, 64, 255));
     border: 1px solid rgb(208, 172, 220);
     border-bottom: 2px solid rgb(121, 100, 128);
@@ -38,7 +38,7 @@ buttonStyle2 = """QPushButton {
     border: 1px solid rgb(160, 160, 160);
     }
     QPushButton:hover {
-    color:  rgb(224, 224, 224);
+    color:  rgb(255, 255, 255);
     border: 1px solid rgb(175, 192, 220);
     }
     QPushButton:pressed {

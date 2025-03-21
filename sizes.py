@@ -90,7 +90,6 @@ class Characters(QWidget):
         self.canvas.draw()
 
 
-
     def next_page(self):
         if self.show_boxes:
             self.show_boxes = False
