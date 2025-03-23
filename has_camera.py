@@ -15,7 +15,7 @@ from PySide6.QtWidgets import QMainWindow, QMessageBox, QPushButton
 from PySide6.QtGui import QAction, QActionGroup, QImage, QPixmap
 from PySide6.QtCore import (QDir, QTimer, Qt, Slot, Signal, QObject, QThread)
 from imagesettings import ImageSettings
-from has_camera_ui_2 import Ui_Camera
+from has_camera_ui_3 import Ui_Camera
 from styles import buttonStyle, buttonStyle2, mboxStyle
 
 from ocr import GeminiOCR

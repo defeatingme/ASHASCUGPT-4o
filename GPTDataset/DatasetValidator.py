@@ -12,7 +12,7 @@ client = OpenAI()
 
 # Open and load the JSON file
 
-dataset = r"GPTDataset\SimplifyANDExpandMULTI-TURN-DATASET.json"
+dataset = r"GPTDataset\QuestionnaireDATASET.json"
 
 count = 0
 

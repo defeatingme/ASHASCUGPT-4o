@@ -19,11 +19,33 @@ def GeminiOCR(image):
     # commands the ai will follow
     rules = (
         "You are an expert at Optical Character Recognition (especially in handwritten characters), only generating the extracted text from the image and nothing else"
-        "Extract the full step-by-step math solution exactly as shown in the image, preserving all fractions in a slashed format. Do not omit any numbers or symbols."
-        r"Display them in a latex code starting and ending each line with delimiters '\[...\]'"
+        "Extract the full step-by-step math solution exactly as shown in the image, including mistakes in the solution. Do not omit any numbers or symbols."
+        "Include the full mathematical problem setup or statement"
+        r"Display them in a well documented latex code starting and ending each line with delimiters '\[...\]'"
         "If included in the image, also extract the name of the writer of the solution, typically at the top left of the image"
         "If there is not even a single mathematical expression from the image, only state 'The image does not contain any mathematical expression.' and nothing else"
         "The results should be in plain text format."
+        r"""\nExample output:
+            '2. Solve the system of two linear equations:
+            \[ \begin{cases} 2x + y = 5 \\ x - 3y = 1 \end{cases} \]
+
+            \[ x - 3y = 1 \] 
+            \[ x = 3y + 1 \] 
+
+            \[ \text{Substitute \( x = 3y + 1\) into the first equation} \]
+            \[ 2x + y = 5 \] 
+            \[ 2(3y + 1) + y = 5 \] 
+            \[ 6y + 2 + y = 5 \] 
+            \[ 7y = 3 \] 
+            \[ y = \frac{3}{7} \] 
+
+            \[ \text{Solve for x:} \]
+            \[ x - 3y = 1 \] 
+            \[ x - 3\left(\frac{3}{7}\right) = 1 \] 
+            \[ x = 1 + \frac{9}{7} \] 
+            \[ x = \frac{16}{7} \]
+            \[ \boxed{\left( \frac{16}{7}, \frac{3}{7} \right)} \]'
+        """
     )
 
     # Gemini model and its configuration 
@@ -44,5 +66,5 @@ def GeminiOCR(image):
     return response.text
 
 if __name__ == "__main__":
-    image = r"images\has\has1.png"
+    image = r"images\answerkey\20250322202128.jpg"
     print(GeminiOCR(image))
