@@ -9,7 +9,7 @@ client = OpenAI()
 
 # Open and load the JSON file
 
-dataset = "SystemsofLinearEquationMULTI-TURNDATASET.json"
+dataset = "GPTDataset\QuestionnaireDATASET.json"
 
 count = 0
 

@@ -6,15 +6,16 @@ print("imports done")
 # System runtime timer
 
 
-genai.configure(api_key="AIzaSyA8E5xI2z_K9D14--1yN62zjIVnFVcfvI4") # Replace with your API Key
 
 # function to send images to gemini
-def upload_to_gemini(path, mime_type=None):
+def upload_to_gemini(genai, path, mime_type=None):
     file = genai.upload_file(path, mime_type=mime_type)
     print(f"Uploaded file '{file.display_name}' as: {file.uri}")
     return file
 
 def GeminiOCR(image):
+    genai_var = genai
+    genai_var.configure(api_key="AIzaSyA8E5xI2z_K9D14--1yN62zjIVnFVcfvI4") # Replace with your API Key
 
     # commands the ai will follow
     rules = (
@@ -24,7 +25,7 @@ def GeminiOCR(image):
         r"Display them in a well documented latex code starting and ending each line with delimiters '\[...\]'"
         "If included in the image, also extract the name of the writer of the solution, typically at the top left of the image"
         "If there is not even a single mathematical expression from the image, only state 'The image does not contain any mathematical expression.' and nothing else"
-        "The results should be in plain text format."
+        r"The results should be in plain text format, and highlight if a line is \boxed{}."
         r"""\nExample output:
             '2. Solve the system of two linear equations:
             \[ \begin{cases} 2x + y = 5 \\ x - 3y = 1 \end{cases} \]
@@ -49,10 +50,10 @@ def GeminiOCR(image):
     )
 
     # Gemini model and its configuration 
-    model = genai.GenerativeModel(
+    model = genai_var.GenerativeModel(
         model_name="gemini-1.5-flash",
         generation_config= {
-            "temperature": 1,
+            "temperature": 0.2,
             "top_p": 0.95,
             "top_k": 40,
             "max_output_tokens": 8192,
@@ -61,7 +62,7 @@ def GeminiOCR(image):
     )
 
     chat_session = model.start_chat(history=[{"role": "user", "parts": [rules]}])
-    response = chat_session.send_message([upload_to_gemini(image, mime_type="image/png")]) # gemini prompt
+    response = chat_session.send_message([upload_to_gemini(genai_var, image, mime_type="image/png")]) # gemini prompt
 
     return response.text
 
