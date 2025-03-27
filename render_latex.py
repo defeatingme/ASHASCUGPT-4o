@@ -323,13 +323,13 @@ if __name__ == "__main__":
 ### Problem 1: \[ 2x - 3 = -3x + 7 \]
 Step 1 is Correct: \[\frac{-(-5) \pm \sqrt{-5^2 - 4 (1) (6)}}{2 (1)} \]
 Step 2 is Incorrect: \[ x = 1 - \frac{9}{7} \] also has an incorrect sign, \( -\frac{9}{7} \). It should be \[ x = 1 + \frac{9}{7} \]
-Final Answer is Correct: \[ x_1 \approx 2 \]
+Final Answer is Correct: \[ x_1 \approx 2 \mid x_2 = | \]
 
 Solution = (4/6)54 = 36%
 Final Answer = 46%
 Overall Score = 82%
 ''' 
     print(latex_raw)
-    window = MathJaxApp(latex_raw_2)
+    window = MathJaxApp(latex_raw)
     window.show()
     sys.exit(app.exec())

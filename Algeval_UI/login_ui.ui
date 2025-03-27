@@ -6,66 +6,88 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>720</width>
-    <height>480</height>
+    <width>760</width>
+    <height>540</height>
    </rect>
+  </property>
+  <property name="cursor">
+   <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
    <string>Login</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: qlineargradient(spread:pad, x1:1, y1:0.176, x2:1, y2:1, stop:0 rgba(208, 172, 220, 255), stop:1 rgba(255, 255, 255, 255));</string>
+   <string notr="true">background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(48, 48, 48, 255), stop:1 rgba(64, 64, 64, 255))</string>
   </property>
   <widget class="QPushButton" name="push_enter">
    <property name="geometry">
     <rect>
-     <x>580</x>
-     <y>420</y>
-     <width>121</width>
-     <height>21</height>
+     <x>540</x>
+     <y>490</y>
+     <width>211</width>
+     <height>25</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>Arial</family>
-     <pointsize>12</pointsize>
+     <family>Segoe UI</family>
+     <pointsize>11</pointsize>
+     <bold>false</bold>
     </font>
    </property>
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(174, 194, 187);
-color:  rgb(45, 34, 45)
-</string>
+    <string notr="true">QPushButton {
+    color:  rgb(224, 224, 224);
+    background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(40, 40, 40, 255), stop:1 rgba(56, 56, 56, 255));
+    border: 1px solid rgb(208, 172, 220);
+    border-bottom: 2px solid rgb(121, 100, 128);
+    border-radius: 4px
+    }
+    QPushButton:disabled {
+    background-color: rgb(48, 48, 48);
+    color:  rgb(160, 160, 160);
+    border: 1px solid rgb(192, 192, 192);
+    border-radius: 4px
+    }</string>
    </property>
    <property name="text">
-    <string>Enter</string>
+    <string>Start program</string>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label_wc">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>80</y>
-     <width>721</width>
+     <y>90</y>
+     <width>271</width>
      <height>21</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>Verdana</family>
+     <family>Segoe UI</family>
      <pointsize>16</pointsize>
      <italic>false</italic>
-     <bold>true</bold>
+     <bold>false</bold>
      <underline>false</underline>
      <kerning>false</kerning>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(45, 34, 45);
-background-color: None
+    <string notr="true">background-color: rgb(208, 172, 220);
+
+color: rgb(32, 32, 32);
+border: 1px solid rgb(208, 172, 220);
 </string>
    </property>
    <property name="text">
-    <string>Welcome To</string>
+    <string>Welcome to</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -76,8 +98,8 @@ background-color: None
     <rect>
      <x>0</x>
      <y>110</y>
-     <width>721</width>
-     <height>51</height>
+     <width>761</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="font">
@@ -87,13 +109,16 @@ background-color: None
      <italic>false</italic>
      <bold>true</bold>
      <underline>false</underline>
+     <strikeout>false</strikeout>
+     <stylestrategy>PreferDefault</stylestrategy>
      <kerning>false</kerning>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(127, 83, 117);
-background-color: None
-</string>
+    <string notr="true">background-color: rgb(48, 48, 48);
+color: rgb(208, 172, 220);
+border: 1px solid rgb(208, 172, 220);
+padding: 8px</string>
    </property>
    <property name="text">
     <string>A  L  G  E  V  A  L</string>
@@ -107,12 +132,18 @@ background-color: None
     <rect>
      <x>0</x>
      <y>170</y>
-     <width>721</width>
+     <width>761</width>
      <height>41</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="styleSheet">
-    <string notr="true">color: #000;
+    <string notr="true">color: rgb(224, 224, 224);
 background-color: None
 </string>
    </property>
@@ -127,45 +158,55 @@ using GPT-4o.</string>
   <widget class="QLineEdit" name="edit_name">
    <property name="geometry">
     <rect>
-     <x>22</x>
-     <y>270</y>
-     <width>681</width>
-     <height>31</height>
+     <x>10</x>
+     <y>290</y>
+     <width>741</width>
+     <height>35</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>11</pointsize>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">padding: 8px; 
-border-radius: 5px; 
-border: 1px solid rgb(81, 139, 132);
-background-color: white</string>
+border-radius: 2px; 
+border: 1px solid rgb(208, 172, 220);
+background-color: rgb(32, 32, 32);
+color: #eee</string>
    </property>
    <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
     <string>Anonymous by default</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_input_name">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>250</y>
+     <x>10</x>
+     <y>270</y>
      <width>351</width>
      <height>20</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>Arial</family>
-     <pointsize>10</pointsize>
+     <family>Segoe UI</family>
+     <pointsize>11</pointsize>
      <bold>false</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(45, 34, 45);
+    <string notr="true">color: rgb(224, 224, 224);
 background-color: None
 </string>
    </property>
    <property name="text">
-    <string>Enter your name :</string>
+    <string>Enter your name:</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
@@ -174,45 +215,55 @@ background-color: None
   <widget class="QLineEdit" name="edit_email">
    <property name="geometry">
     <rect>
-     <x>22</x>
-     <y>320</y>
-     <width>681</width>
-     <height>31</height>
+     <x>10</x>
+     <y>360</y>
+     <width>741</width>
+     <height>35</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>11</pointsize>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">padding: 8px; 
-border-radius: 5px; 
-border: 1px solid rgb(81, 139, 132);
-background-color: white</string>
+border-radius: 2px; 
+border: 1px solid rgb(208, 172, 220);
+background-color: rgb(32, 32, 32);
+color: #eee</string>
    </property>
    <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
     <string>Optional</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_input_email">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>300</y>
+     <x>10</x>
+     <y>340</y>
      <width>351</width>
      <height>20</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>Arial</family>
-     <pointsize>10</pointsize>
+     <family>Segoe UI</family>
+     <pointsize>11</pointsize>
      <bold>false</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(45, 34, 45);
+    <string notr="true">color: rgb(224, 224, 224);
 background-color: None
 </string>
    </property>
    <property name="text">
-    <string>Email :</string>
+    <string>Email:</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
@@ -221,40 +272,50 @@ background-color: None
   <widget class="QLineEdit" name="edit_dept">
    <property name="geometry">
     <rect>
-     <x>22</x>
-     <y>370</y>
-     <width>681</width>
-     <height>31</height>
+     <x>10</x>
+     <y>430</y>
+     <width>741</width>
+     <height>35</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>11</pointsize>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">padding: 8px; 
-border-radius: 5px; 
-border: 1px solid rgb(81, 139, 132);
-background-color: white</string>
+border-radius: 2px; 
+border: 1px solid rgb(208, 172, 220);
+background-color: rgb(32, 32, 32);
+color: #eee</string>
    </property>
    <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
     <string>Optional</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_input_dept">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>350</y>
+     <x>10</x>
+     <y>410</y>
      <width>351</width>
      <height>20</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>Arial</family>
-     <pointsize>10</pointsize>
+     <family>Segoe UI</family>
+     <pointsize>11</pointsize>
      <bold>false</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(45, 34, 45);
+    <string notr="true">color: rgb(224, 224, 224);
 background-color: None
 </string>
    </property>
@@ -263,6 +324,23 @@ background-color: None
    </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_icon">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>10</y>
+     <width>80</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: None;
+background-color: None</string>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

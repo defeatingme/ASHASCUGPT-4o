@@ -14,8 +14,8 @@ def upload_to_gemini(genai, path, mime_type=None):
     return file
 
 def GeminiOCR(image):
-    genai_var = genai
-    genai_var.configure(api_key="AIzaSyA8E5xI2z_K9D14--1yN62zjIVnFVcfvI4") # Replace with your API Key
+    gen_model = genai
+    gen_model.configure(api_key="AIzaSyA8E5xI2z_K9D14--1yN62zjIVnFVcfvI4") # Replace with your API Key
 
     # commands the ai will follow
     rules = (
@@ -23,34 +23,22 @@ def GeminiOCR(image):
         "Extract the full step-by-step math solution exactly as shown in the image, including mistakes in the solution. Do not omit any numbers or symbols."
         "Include the full mathematical problem setup or statement"
         r"Display them in a well documented latex code starting and ending each line with delimiters '\[...\]'"
-        "If included in the image, also extract the name of the writer of the solution, typically at the top left of the image"
-        "If there is not even a single mathematical expression from the image, only state 'The image does not contain any mathematical expression.' and nothing else"
-        r"The results should be in plain text format, and highlight if a line is \boxed{}."
-        r"""\nExample output:
-            '2. Solve the system of two linear equations:
-            \[ \begin{cases} 2x + y = 5 \\ x - 3y = 1 \end{cases} \]
-
-            \[ x - 3y = 1 \] 
-            \[ x = 3y + 1 \] 
-
-            \[ \text{Substitute \( x = 3y + 1\) into the first equation} \]
-            \[ 2x + y = 5 \] 
-            \[ 2(3y + 1) + y = 5 \] 
-            \[ 6y + 2 + y = 5 \] 
-            \[ 7y = 3 \] 
-            \[ y = \frac{3}{7} \] 
-
-            \[ \text{Solve for x:} \]
-            \[ x - 3y = 1 \] 
-            \[ x - 3\left(\frac{3}{7}\right) = 1 \] 
-            \[ x = 1 + \frac{9}{7} \] 
-            \[ x = \frac{16}{7} \]
-            \[ \boxed{\left( \frac{16}{7}, \frac{3}{7} \right)} \]'
-        """
+        "If included in the image, also extract the name of the writer of the solution, typically at the top left of the image. "
+        "Count the number of solution steps, excluding the problem equation and the final answer, but including all intermediate steps. "
+        "Identify the problem equation separately if possible. If not, assume the first expression is the problem equation. "
+        "Format the result in JSON with the following structure:\n"
+        "{\n"
+        '  "name": "<Name of writer if available>",\n'
+        '  "expressions": ["<Extracted LaTeX Expression 1>", "<Expression 2>", ...],\n'
+        '  "problem_equation": "<Extracted problem equation if identifiable>",\n'
+        '  "layers": <count the number of layers in the solution, including the problem and final answer>,\n'
+        '  "solution_steps": <count the number of solution steps>,\n'
+        '  "message": "<Message \"The image does not contain any mathematical expression.\" if no math expressions are found>"\n'
+        "}"
     )
 
     # Gemini model and its configuration 
-    model = genai_var.GenerativeModel(
+    model = gen_model.GenerativeModel(
         model_name="gemini-1.5-flash",
         generation_config= {
             "temperature": 0.2,
@@ -62,7 +50,7 @@ def GeminiOCR(image):
     )
 
     chat_session = model.start_chat(history=[{"role": "user", "parts": [rules]}])
-    response = chat_session.send_message([upload_to_gemini(genai_var, image, mime_type="image/png")]) # gemini prompt
+    response = chat_session.send_message([upload_to_gemini(gen_model, image, mime_type="image/png")]) # gemini prompt
 
     return response.text
 

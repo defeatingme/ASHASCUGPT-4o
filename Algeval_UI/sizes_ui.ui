@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Size</class>
+ <widget class="QWidget" name="Size">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>840</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(48, 48, 48, 255), stop:1 rgba(64, 64, 64, 255))</string>
+  </property>
+  <widget class="QPushButton" name="push_prev">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>650</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background-color: #333;
+color: rgb(208, 172, 220);
+border: 1px solid rgb(208, 172, 220);
+border-radius: 4px
+}
+QPushButton:disabled {
+background-color: rgb(64, 64, 64);
+color:  rgb(192, 192, 192);
+border: 1px solid rgb(192, 192, 192);
+border-radius: 4px
+}
+</string>
+   </property>
+   <property name="text">
+    <string>Previous page</string>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="push_next">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>650</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background-color: #333;
+color: rgb(208, 172, 220);
+border: 1px solid rgb(208, 172, 220);
+border-radius: 4px
+}
+QPushButton:disabled {
+background-color: rgb(64, 64, 64);
+color:  rgb(192, 192, 192);
+border: 1px solid rgb(192, 192, 192);
+border-radius: 4px
+}
+</string>
+   </property>
+   <property name="text">
+    <string>Next page</string>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="push_back">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>670</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background-color: #333;
+color: rgb(208, 172, 220);
+border: 1px solid rgb(208, 172, 220);
+border-radius: 4px
+}
+QPushButton:disabled {
+background-color: rgb(64, 64, 64);
+color:  rgb(192, 192, 192);
+border: 1px solid rgb(192, 192, 192);
+border-radius: 4px
+}
+</string>
+   </property>
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>820</width>
+     <height>630</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 1px solid  rgb(208, 172, 220);
+background-color: rgb(64, 64, 64);
+border-radius: 2px
+</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

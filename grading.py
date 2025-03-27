@@ -118,7 +118,7 @@ class SessionWindow(QWidget):
                 # Display retrieved status
                 self.display_status()
             else:
-                self._ui.label_save_note.setText(f"*No data is saved.")
+                self._ui.label_save_note.setText(f"*No. of AKs saved: 0/2")
 
         except Exception as e:
             print(f"Database error: {e}")

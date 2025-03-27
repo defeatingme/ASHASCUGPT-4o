@@ -40,7 +40,7 @@ class Evaluation(QObject):  # Now inherits QObject for PySide6 compatibility
     def getResponse(self):
         """ Sends conversation to GPT model and parses the structured response. """
         completion = client.beta.chat.completions.parse(
-        model="ft:gpt-4o-2024-08-06:grp-4-na-batak-magcode::B4ichSCO",
+        model="ft:gpt-4o-2024-08-06:grp-4-na-batak-magcode::BFZWjNAX",
         messages=self.conversation,
         temperature=0.2,
         response_format=Response_for_HAS,

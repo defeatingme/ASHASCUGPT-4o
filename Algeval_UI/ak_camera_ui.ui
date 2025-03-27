@@ -14,21 +14,24 @@
    <string>Camera</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(150, 150, 150, 255), stop:1 rgba(71, 71, 71, 255))</string>
+   <string notr="true">background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(48, 48, 48, 255), stop:1 rgba(64, 64, 64, 255))</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="captureWidget">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>569</y>
-      <width>371</width>
-      <height>101</height>
+      <x>750</x>
+      <y>440</y>
+      <width>321</width>
+      <height>131</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">border: 1px solid rgb(208, 172, 220);
-background-color: rgb(71, 71, 71)</string>
+background-color: rgb(48, 48, 48);
+border-radius: 2px;
+color: rgb(224, 224, 224);
+</string>
     </property>
     <property name="currentIndex">
      <number>0</number>
@@ -43,10 +46,10 @@ background-color: rgb(71, 71, 71)</string>
       </property>
       <property name="geometry">
        <rect>
-        <x>200</x>
-        <y>10</y>
-        <width>141</width>
-        <height>24</height>
+        <x>10</x>
+        <y>70</y>
+        <width>291</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="font">
@@ -57,20 +60,39 @@ background-color: rgb(71, 71, 71)</string>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: #333;
-color: rgb(208, 172, 220)
+       <string notr="true">QPushButton {
+background-color: #333;
+color: rgb(208, 172, 220);
+border: 1px solid rgb(208, 172, 220);
+border-radius: 4px
+}
+QPushButton:disabled {
+background-color: rgb(64, 64, 64);
+color:  rgb(192, 192, 192);
+border: 1px solid rgb(192, 192, 192);
+}
+QPushButton:hover {
+color:  rgb(175, 192, 220);
+border: 1px solid rgb(175, 192, 220);
+}
+QPushButton:pressed {
+background-color:  rgb(208, 172, 220);
+color: #eee;
+border: 1px solid #eee;
+font-weight: bold;
+}
 </string>
       </property>
       <property name="text">
-       <string>Capture Photo</string>
+       <string>Capture image</string>
       </property>
      </widget>
      <widget class="QSlider" name="exposureCompensation">
       <property name="geometry">
        <rect>
-        <x>30</x>
+        <x>70</x>
         <y>30</y>
-        <width>150</width>
+        <width>181</width>
         <height>30</height>
        </rect>
       </property>
@@ -97,7 +119,7 @@ border: None;</string>
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>10</y>
         <width>161</width>
         <height>16</height>
@@ -107,43 +129,16 @@ border: None;</string>
        <font>
         <family>Arial</family>
         <pointsize>10</pointsize>
-        <bold>true</bold>
+        <bold>false</bold>
        </font>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: None;
-border: None;</string>
+border: None;
+color:  rgb(224, 224, 224)</string>
       </property>
       <property name="text">
        <string>Exposure Compensation:</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="push_retake">
-      <property name="geometry">
-       <rect>
-        <x>200</x>
-        <y>40</y>
-        <width>141</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <pointsize>10</pointsize>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: #333;
-color: rgb(208, 172, 220)
-</string>
-      </property>
-      <property name="text">
-       <string>Retake</string>
-      </property>
-      <property name="checkable">
-       <bool>false</bool>
       </property>
      </widget>
     </widget>
@@ -152,9 +147,9 @@ color: rgb(208, 172, 220)
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>20</y>
+      <y>0</y>
       <width>740</width>
-      <height>560</height>
+      <height>680</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -168,19 +163,19 @@ color: rgb(208, 172, 220)
       <active>
        <colorrole role="Button">
         <brush brushstyle="LinearGradientPattern">
-         <gradient startx="1.000000000000000" starty="0.000000000000000" endx="1.000000000000000" endy="1.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
+         <gradient startx="1.000000000000000" starty="1.000000000000000" endx="1.000000000000000" endy="0.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
           <gradientstop position="0.000000000000000">
            <color alpha="255">
-            <red>150</red>
-            <green>150</green>
-            <blue>150</blue>
+            <red>64</red>
+            <green>64</green>
+            <blue>64</blue>
            </color>
           </gradientstop>
           <gradientstop position="1.000000000000000">
            <color alpha="255">
-            <red>71</red>
-            <green>71</green>
-            <blue>71</blue>
+            <red>48</red>
+            <green>48</green>
+            <blue>48</blue>
            </color>
           </gradientstop>
          </gradient>
@@ -188,19 +183,19 @@ color: rgb(208, 172, 220)
        </colorrole>
        <colorrole role="Base">
         <brush brushstyle="LinearGradientPattern">
-         <gradient startx="1.000000000000000" starty="0.000000000000000" endx="1.000000000000000" endy="1.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
+         <gradient startx="1.000000000000000" starty="1.000000000000000" endx="1.000000000000000" endy="0.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
           <gradientstop position="0.000000000000000">
            <color alpha="255">
-            <red>150</red>
-            <green>150</green>
-            <blue>150</blue>
+            <red>64</red>
+            <green>64</green>
+            <blue>64</blue>
            </color>
           </gradientstop>
           <gradientstop position="1.000000000000000">
            <color alpha="255">
-            <red>71</red>
-            <green>71</green>
-            <blue>71</blue>
+            <red>48</red>
+            <green>48</green>
+            <blue>48</blue>
            </color>
           </gradientstop>
          </gradient>
@@ -208,19 +203,19 @@ color: rgb(208, 172, 220)
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="LinearGradientPattern">
-         <gradient startx="1.000000000000000" starty="0.000000000000000" endx="1.000000000000000" endy="1.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
+         <gradient startx="1.000000000000000" starty="1.000000000000000" endx="1.000000000000000" endy="0.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
           <gradientstop position="0.000000000000000">
            <color alpha="255">
-            <red>150</red>
-            <green>150</green>
-            <blue>150</blue>
+            <red>64</red>
+            <green>64</green>
+            <blue>64</blue>
            </color>
           </gradientstop>
           <gradientstop position="1.000000000000000">
            <color alpha="255">
-            <red>71</red>
-            <green>71</green>
-            <blue>71</blue>
+            <red>48</red>
+            <green>48</green>
+            <blue>48</blue>
            </color>
           </gradientstop>
          </gradient>
@@ -230,19 +225,19 @@ color: rgb(208, 172, 220)
       <inactive>
        <colorrole role="Button">
         <brush brushstyle="LinearGradientPattern">
-         <gradient startx="1.000000000000000" starty="0.000000000000000" endx="1.000000000000000" endy="1.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
+         <gradient startx="1.000000000000000" starty="1.000000000000000" endx="1.000000000000000" endy="0.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
           <gradientstop position="0.000000000000000">
            <color alpha="255">
-            <red>150</red>
-            <green>150</green>
-            <blue>150</blue>
+            <red>64</red>
+            <green>64</green>
+            <blue>64</blue>
            </color>
           </gradientstop>
           <gradientstop position="1.000000000000000">
            <color alpha="255">
-            <red>71</red>
-            <green>71</green>
-            <blue>71</blue>
+            <red>48</red>
+            <green>48</green>
+            <blue>48</blue>
            </color>
           </gradientstop>
          </gradient>
@@ -250,19 +245,19 @@ color: rgb(208, 172, 220)
        </colorrole>
        <colorrole role="Base">
         <brush brushstyle="LinearGradientPattern">
-         <gradient startx="1.000000000000000" starty="0.000000000000000" endx="1.000000000000000" endy="1.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
+         <gradient startx="1.000000000000000" starty="1.000000000000000" endx="1.000000000000000" endy="0.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
           <gradientstop position="0.000000000000000">
            <color alpha="255">
-            <red>150</red>
-            <green>150</green>
-            <blue>150</blue>
+            <red>64</red>
+            <green>64</green>
+            <blue>64</blue>
            </color>
           </gradientstop>
           <gradientstop position="1.000000000000000">
            <color alpha="255">
-            <red>71</red>
-            <green>71</green>
-            <blue>71</blue>
+            <red>48</red>
+            <green>48</green>
+            <blue>48</blue>
            </color>
           </gradientstop>
          </gradient>
@@ -270,19 +265,19 @@ color: rgb(208, 172, 220)
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="LinearGradientPattern">
-         <gradient startx="1.000000000000000" starty="0.000000000000000" endx="1.000000000000000" endy="1.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
+         <gradient startx="1.000000000000000" starty="1.000000000000000" endx="1.000000000000000" endy="0.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
           <gradientstop position="0.000000000000000">
            <color alpha="255">
-            <red>150</red>
-            <green>150</green>
-            <blue>150</blue>
+            <red>64</red>
+            <green>64</green>
+            <blue>64</blue>
            </color>
           </gradientstop>
           <gradientstop position="1.000000000000000">
            <color alpha="255">
-            <red>71</red>
-            <green>71</green>
-            <blue>71</blue>
+            <red>48</red>
+            <green>48</green>
+            <blue>48</blue>
            </color>
           </gradientstop>
          </gradient>
@@ -292,19 +287,19 @@ color: rgb(208, 172, 220)
       <disabled>
        <colorrole role="Button">
         <brush brushstyle="LinearGradientPattern">
-         <gradient startx="1.000000000000000" starty="0.000000000000000" endx="1.000000000000000" endy="1.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
+         <gradient startx="1.000000000000000" starty="1.000000000000000" endx="1.000000000000000" endy="0.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
           <gradientstop position="0.000000000000000">
            <color alpha="255">
-            <red>150</red>
-            <green>150</green>
-            <blue>150</blue>
+            <red>64</red>
+            <green>64</green>
+            <blue>64</blue>
            </color>
           </gradientstop>
           <gradientstop position="1.000000000000000">
            <color alpha="255">
-            <red>71</red>
-            <green>71</green>
-            <blue>71</blue>
+            <red>48</red>
+            <green>48</green>
+            <blue>48</blue>
            </color>
           </gradientstop>
          </gradient>
@@ -312,19 +307,19 @@ color: rgb(208, 172, 220)
        </colorrole>
        <colorrole role="Base">
         <brush brushstyle="LinearGradientPattern">
-         <gradient startx="1.000000000000000" starty="0.000000000000000" endx="1.000000000000000" endy="1.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
+         <gradient startx="1.000000000000000" starty="1.000000000000000" endx="1.000000000000000" endy="0.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
           <gradientstop position="0.000000000000000">
            <color alpha="255">
-            <red>150</red>
-            <green>150</green>
-            <blue>150</blue>
+            <red>64</red>
+            <green>64</green>
+            <blue>64</blue>
            </color>
           </gradientstop>
           <gradientstop position="1.000000000000000">
            <color alpha="255">
-            <red>71</red>
-            <green>71</green>
-            <blue>71</blue>
+            <red>48</red>
+            <green>48</green>
+            <blue>48</blue>
            </color>
           </gradientstop>
          </gradient>
@@ -332,19 +327,19 @@ color: rgb(208, 172, 220)
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="LinearGradientPattern">
-         <gradient startx="1.000000000000000" starty="0.000000000000000" endx="1.000000000000000" endy="1.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
+         <gradient startx="1.000000000000000" starty="1.000000000000000" endx="1.000000000000000" endy="0.000000000000000" type="LinearGradient" spread="PadSpread" coordinatemode="ObjectBoundingMode">
           <gradientstop position="0.000000000000000">
            <color alpha="255">
-            <red>150</red>
-            <green>150</green>
-            <blue>150</blue>
+            <red>64</red>
+            <green>64</green>
+            <blue>64</blue>
            </color>
           </gradientstop>
           <gradientstop position="1.000000000000000">
            <color alpha="255">
-            <red>71</red>
-            <green>71</green>
-            <blue>71</blue>
+            <red>48</red>
+            <green>48</green>
+            <blue>48</blue>
            </color>
           </gradientstop>
          </gradient>
@@ -354,7 +349,9 @@ color: rgb(208, 172, 220)
      </palette>
     </property>
     <property name="styleSheet">
-     <string notr="true">border: 1px solid rgb(208, 172, 220)</string>
+     <string notr="true">border: 1px solid rgb(208, 172, 220);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(64, 64, 64, 255), stop:1 rgba(48, 48, 48, 255));
+</string>
     </property>
     <property name="currentIndex">
      <number>0</number>
@@ -390,9 +387,9 @@ color: rgb(208, 172, 220)
    <widget class="QPushButton" name="push_save">
     <property name="geometry">
      <rect>
-      <x>780</x>
-      <y>640</y>
-      <width>261</width>
+      <x>750</x>
+      <y>610</y>
+      <width>321</width>
       <height>25</height>
      </rect>
     </property>
@@ -404,12 +401,31 @@ color: rgb(208, 172, 220)
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: #333;
+     <string notr="true">QPushButton {
+background-color: #333;
 color: rgb(208, 172, 220);
-border: 1px solid rgb(208, 172, 220)</string>
+border: 1px solid rgb(208, 172, 220);
+border-radius: 4px
+}
+QPushButton:disabled {
+background-color: rgb(64, 64, 64);
+color:  rgb(192, 192, 192);
+border: 1px solid rgb(192, 192, 192);
+}
+QPushButton:hover {
+color:  rgb(175, 192, 220);
+border: 1px solid rgb(175, 192, 220);
+}
+QPushButton:pressed {
+background-color:  rgb(208, 172, 220);
+color: #eee;
+border: 1px solid #eee;
+font-weight: bold;
+}
+</string>
     </property>
     <property name="text">
-     <string>Save and check another solution</string>
+     <string>Submit answer key</string>
     </property>
     <property name="checkable">
      <bool>false</bool>
@@ -418,7 +434,7 @@ border: 1px solid rgb(208, 172, 220)</string>
    <widget class="QPushButton" name="push_back">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>750</x>
       <y>650</y>
       <width>121</width>
       <height>21</height>
@@ -431,9 +447,28 @@ border: 1px solid rgb(208, 172, 220)</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: #333;
+     <string notr="true">QPushButton {
+background-color: #333;
 color: rgb(208, 172, 220);
-border: 1px solid rgb(208, 172, 220)</string>
+border: 1px solid rgb(208, 172, 220);
+border-radius: 4px
+}
+QPushButton:disabled {
+background-color: rgb(64, 64, 64);
+color:  rgb(192, 192, 192);
+border: 1px solid rgb(192, 192, 192);
+}
+QPushButton:hover {
+color:  rgb(175, 192, 220);
+border: 1px solid rgb(175, 192, 220);
+}
+QPushButton:pressed {
+background-color:  rgb(208, 172, 220);
+color: #eee;
+border: 1px solid #eee;
+font-weight: bold;
+}
+</string>
     </property>
     <property name="text">
      <string>Back to Session</string>
@@ -442,46 +477,20 @@ border: 1px solid rgb(208, 172, 220)</string>
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_latex">
-    <property name="geometry">
-     <rect>
-      <x>760</x>
-      <y>0</y>
-      <width>241</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>10</pointsize>
-      <bold>false</bold>
-      <underline>false</underline>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: None;
-color: #eee</string>
-    </property>
-    <property name="text">
-     <string>Solution in LaTeX</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QFrame" name="frame_result">
+   <widget class="QFrame" name="frame_latex">
     <property name="geometry">
      <rect>
       <x>750</x>
-      <y>329</y>
+      <y>10</y>
       <width>321</width>
-      <height>301</height>
+      <height>420</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">border: 1px solid  rgb(208, 172, 220);
-background-color: rgb(150, 150, 150)</string>
+background-color: rgb(96, 96, 96);
+border-radius: 2px
+</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::Shape::StyledPanel</enum>
@@ -489,7 +498,21 @@ background-color: rgb(150, 150, 150)</string>
     <property name="frameShadow">
      <enum>QFrame::Shadow::Raised</enum>
     </property>
-    <widget class="QLabel" name="label_result">
+    <widget class="QWebEngineView" name="web_latex" native="true">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>20</y>
+       <width>321</width>
+       <height>400</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(64, 64, 64);
+border: 1px solid rgb(208, 172, 220)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_latex">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -502,200 +525,29 @@ background-color: rgb(150, 150, 150)</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: #eee;
-background-color: rgb(71, 71, 71);</string>
-     </property>
-     <property name="text">
-      <string>Result:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_sol_grade">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>260</y>
-       <width>100</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Verdana</family>
-       <pointsize>10</pointsize>
        <bold>false</bold>
+       <underline>false</underline>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #eee;
-background-color: rgb(71, 71, 71);</string>
+      <string notr="true">color: rgb(224, 224, 224);
+background-color: rgb(48, 48, 48);
+</string>
      </property>
      <property name="text">
-      <string>Solution:
-{sol_grade}</string>
+      <string>Solution in LaTeX</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_fa_grade">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>260</y>
-       <width>100</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Verdana</family>
-       <pointsize>10</pointsize>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: #eee;
-background-color: rgb(71, 71, 71);</string>
-     </property>
-     <property name="text">
-      <string>Final Answer:
-{fa_grade}</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_overall_grade">
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>260</y>
-       <width>121</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Verdana</family>
-       <pointsize>10</pointsize>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: #eee;
-background-color: rgb(71, 71, 71);</string>
-     </property>
-     <property name="text">
-      <string>Overall:
-{overall_grade}</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
-     </property>
-    </widget>
-    <widget class="QWebEngineView" name="web_result" native="true">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>20</y>
-       <width>321</width>
-       <height>241</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(150, 150, 150)</string>
+      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
      </property>
     </widget>
    </widget>
-   <widget class="QLabel" name="label_counter">
+   <widget class="QPushButton" name="push_size">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>0</y>
-      <width>241</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>10</pointsize>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: #eee;
-background-color: None</string>
-    </property>
-    <property name="text">
-     <string>No. of solution checked: {has_counter}</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_last_name">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>0</y>
-      <width>361</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>10</pointsize>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: #eee;
-background-color: None</string>
-    </property>
-    <property name="text">
-     <string>Last checked from: {has_name}</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="edit_student_name">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>590</y>
-      <width>281</width>
-      <height>35</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">padding: 8px; 
-border-radius: 5px; 
-border: 1px solid rgb(208, 172, 220);
-background-color: #333;
-color: #eee</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="placeholderText">
-     <string>Optional/Auto-fill</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_student_name">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>600</y>
-      <width>61</width>
+      <x>760</x>
+      <y>580</y>
+      <width>301</width>
       <height>21</height>
      </rect>
     </property>
@@ -704,60 +556,62 @@ color: #eee</string>
       <family>Arial</family>
       <pointsize>10</pointsize>
       <bold>false</bold>
-      <underline>false</underline>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: None;
-color: #eee</string>
+     <string notr="true">QPushButton {
+background-color: #333;
+color: rgb(208, 172, 220);
+border: 1px solid rgb(208, 172, 220);
+border-radius: 4px
+}
+QPushButton:disabled {
+background-color: rgb(64, 64, 64);
+color:  rgb(192, 192, 192);
+border: 1px solid rgb(192, 192, 192);
+}
+QPushButton:hover {
+color:  rgb(175, 192, 220);
+border: 1px solid rgb(175, 192, 220);
+}
+QPushButton:pressed {
+background-color:  rgb(208, 172, 220);
+color: #eee;
+border: 1px solid #eee;
+font-weight: bold;
+}
+</string>
     </property>
     <property name="text">
-     <string>Name/ID:</string>
+     <string>View character sizes</string>
     </property>
-    <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+    <property name="checkable">
+     <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_note_autofill">
+   <widget class="QLabel" name="label_time">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>620</y>
-      <width>151</width>
+      <x>970</x>
+      <y>430</y>
+      <width>101</width>
       <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Arial</family>
-      <pointsize>8</pointsize>
-      <bold>false</bold>
-      <underline>false</underline>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: None;
-color: rgb(208, 172, 220)</string>
+color: rgb(208, 172, 220);</string>
     </property>
     <property name="text">
-     <string>*May auto-fill after scan if none</string>
+     <string>Runtime: 0.00s</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QWebEngineView" name="web_latex" native="true">
-    <property name="geometry">
-     <rect>
-      <x>750</x>
-      <y>20</y>
-      <width>320</width>
-      <height>300</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(150, 150, 150);
-border: 1px solid rgb(208, 172, 220)</string>
+     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
     </property>
    </widget>
   </widget>
@@ -771,8 +625,8 @@ border: 1px solid rgb(208, 172, 220)</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #333;
-color: #eee</string>
+    <string notr="true">background-color: rgb(48, 48, 48);
+color: rgb(224, 224, 224)</string>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -800,7 +654,12 @@ color: #eee</string>
    <addaction name="menuDevices"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="styleSheet">
+    <string notr="true">color: rgb(224, 224, 224);
+background-color: rgb(64, 64, 64)</string>
+   </property>
+  </widget>
   <action name="actionExit">
    <property name="text">
     <string>Quit</string>
@@ -832,15 +691,15 @@ color: #eee</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QVideoWidget</class>
-   <extends>QWidget</extends>
-   <header>qvideowidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QWebEngineView</class>
    <extends>QWidget</extends>
    <header>QtWebEngineWidgets/QWebEngineView</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QVideoWidget</class>
+   <extends>QWidget</extends>
+   <header>qvideowidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
